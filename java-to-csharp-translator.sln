@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeGenerator", "CodeGenera
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyntaxAnalyzer", "SyntaxAnalyzer\SyntaxAnalyzer.csproj", "{E513C420-D65E-446C-A83D-AB219204C6CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataStructures", "DataStructures\DataStructures.csproj", "{F09AAE83-F893-4DE7-9BA4-4D22B0A703FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{E513C420-D65E-446C-A83D-AB219204C6CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E513C420-D65E-446C-A83D-AB219204C6CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E513C420-D65E-446C-A83D-AB219204C6CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F09AAE83-F893-4DE7-9BA4-4D22B0A703FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F09AAE83-F893-4DE7-9BA4-4D22B0A703FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F09AAE83-F893-4DE7-9BA4-4D22B0A703FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F09AAE83-F893-4DE7-9BA4-4D22B0A703FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
