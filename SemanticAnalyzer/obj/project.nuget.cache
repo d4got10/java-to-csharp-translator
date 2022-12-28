@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "lQWM5oNC42WyxMiRQ/brjYZ4wEPe9AtyBw6waTLJHQ6NTWbtzOFr60+pPRU5Eb+CBNAvcki4LctV0GbJkSXkew==",
+  "dgSpecHash": "FEDVhKrJfwuKb7/PKYEXQI3ZTKhnrdaEZwfMHczPRGKcf7XGCmsWzyj7rCSqXWh04xFNgeZw7CODhxPdVal50A==",
   "success": true,
-  "projectFilePath": "C:\\Users\\rusbe\\Desktop\\University\\java-to-csharp-translator\\SemanticAnalyzer\\SemanticAnalyzer.csproj",
+  "projectFilePath": "/mnt/51ca5b73-179f-4bf1-a4ea-4a85cc048421/java-to-csharp-translator/SemanticAnalyzer/SemanticAnalyzer.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

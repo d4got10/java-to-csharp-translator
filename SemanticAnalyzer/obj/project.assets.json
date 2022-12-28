@@ -27,34 +27,32 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\rusbe\\.nuget\\packages\\": {}
+    "/home/brat/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\rusbe\\Desktop\\University\\java-to-csharp-translator\\SemanticAnalyzer\\SemanticAnalyzer.csproj",
+      "projectUniqueName": "/mnt/51ca5b73-179f-4bf1-a4ea-4a85cc048421/java-to-csharp-translator/SemanticAnalyzer/SemanticAnalyzer.csproj",
       "projectName": "SemanticAnalyzer",
-      "projectPath": "C:\\Users\\rusbe\\Desktop\\University\\java-to-csharp-translator\\SemanticAnalyzer\\SemanticAnalyzer.csproj",
-      "packagesPath": "C:\\Users\\rusbe\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\rusbe\\Desktop\\University\\java-to-csharp-translator\\SemanticAnalyzer\\obj\\",
+      "projectPath": "/mnt/51ca5b73-179f-4bf1-a4ea-4a85cc048421/java-to-csharp-translator/SemanticAnalyzer/SemanticAnalyzer.csproj",
+      "packagesPath": "/home/brat/.nuget/packages/",
+      "outputPath": "/mnt/51ca5b73-179f-4bf1-a4ea-4a85cc048421/java-to-csharp-translator/SemanticAnalyzer/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\rusbe\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/home/brat/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\Users\\rusbe\\Desktop\\University\\java-to-csharp-translator\\DataStructures\\DataStructures.csproj": {
-              "projectPath": "C:\\Users\\rusbe\\Desktop\\University\\java-to-csharp-translator\\DataStructures\\DataStructures.csproj"
+            "/mnt/51ca5b73-179f-4bf1-a4ea-4a85cc048421/java-to-csharp-translator/DataStructures/DataStructures.csproj": {
+              "projectPath": "/mnt/51ca5b73-179f-4bf1-a4ea-4a85cc048421/java-to-csharp-translator/DataStructures/DataStructures.csproj"
             }
           }
         }
@@ -74,7 +72,8 @@
           "net47",
           "net471",
           "net472",
-          "net48"
+          "net48",
+          "net481"
         ],
         "assetTargetFallback": true,
         "warn": true,
@@ -83,7 +82,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.404/RuntimeIdentifierGraph.json"
       }
     }
   }

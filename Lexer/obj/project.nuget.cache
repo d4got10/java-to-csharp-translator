@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "hfJcICuKVSpab+JHo7OpH9meinfxh357DCJQcXjpl3mez+ZYenMlAw7KXl+xjbPw99iSOTBlL2+GBrSm7zm5/A==",
+  "dgSpecHash": "1Gu+DSya1+YEAWmd4jA/qAi4QX6jS5pAMEhi8sDncgRiBSRcd3rjZmIFQh7CsZE/3rmhLcW+GZNunFbjq3LeqA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\rusbe\\Desktop\\University\\java-to-csharp-translator\\Lexer\\Lexer.csproj",
+  "projectFilePath": "/mnt/51ca5b73-179f-4bf1-a4ea-4a85cc048421/java-to-csharp-translator/Lexer/Lexer.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
