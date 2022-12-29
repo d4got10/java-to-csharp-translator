@@ -1,5 +1,5 @@
-﻿using LexicalAnalysis;
-
+﻿using DataStructures;
+using LexicalAnalysis;
 const string path = "input.txt";
 
 if (!File.Exists(path))
@@ -13,7 +13,7 @@ if (!File.Exists(path))
 
 var lexemes = Lexer.Parse(ReadFile(path));
 foreach(var lexeme in lexemes)
-    Console.WriteLine(lexeme);
+    Console.WriteLine(lexeme.Type+" " +lexeme.Value + " " + lexeme.LineNumber +":"+lexeme.ColumnNumber);
 
 
 static string ReadFile(string path) => File.ReadAllText(path);

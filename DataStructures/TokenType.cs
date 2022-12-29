@@ -7,5 +7,10 @@ public enum TokenType
     Type,
     Identifier,
     Semicolon,
-    AccessModifier
+    AccessModifier,
+    Value,
+    OpenBracket,
+    CloseBracket,
+    Comma,
+    Dot
 }
