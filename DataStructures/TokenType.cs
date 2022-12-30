@@ -11,6 +11,5 @@ public enum TokenType
     Value,
     OpenBracket,
     CloseBracket,
-    Comma,
-    Dot
+    Comma
 }

@@ -39,19 +39,19 @@ namespace LexicalAnalysis
             int numLines = CountLines(text);
             Console.WriteLine(numLines);
             List<Token> allWords = new List<Token>();
+            bool isNowString=false;
             for (int l = 0; l < numLines; l++)
             {
                 var currentText = GetLine(text, l);
                 string pattern = @"([\u0022\u002F\u003D\u0025\u005B\u005D*() ,;+><!&|-}{])";
-                string[,] words = new string[1000, 3];
                 var words1 = Regex.Split(currentText, pattern);
+                string[,] words = new string[words1.Length, 3];
                 for(var i = 0 ; i<words1.Length; i++)
                 {
                     words[i,0] = words1[i];
                 }
                 int row = 0;
                 int k=0;
-                bool isNowString=false;
 
                 for (var i = 0; i < words.GetLength(0); i++)
                 {
@@ -72,6 +72,8 @@ namespace LexicalAnalysis
                     {
                         words[k,0] += words[i,0];
                         words[i,0] = "";
+                        words[i, 1] = l.ToString();
+                        words[i, 2] = row.ToString();
                     }
 
                     var len = 0;
@@ -80,11 +82,21 @@ namespace LexicalAnalysis
                         len = words[i,0].Length;
                     }
 
-                    if (!isNowString && words[i,0]!="\"" && words[i,0]!="" && words[i,0]!=" ")
+                    if (!isNowString && words[i,0]!="\"" && words[i,0]!=null && words[i,0].Length>0)
                     {
                         words[i, 0] = words[i,0];
                         words[i, 1] = l.ToString();
                         words[i, 2] = row.ToString();
+                    }
+
+                    if (i==0 && isNowString)
+                    {
+                        words[i, 0] = "\"" + words[k, 0];
+                    }
+                    
+                    if (isNowString && i == words.GetLength(0) - 1)
+                    {
+                        words[k, 0] = words[k, 0]+"\"";
                     }
 
                     row += len;
@@ -115,6 +127,24 @@ namespace LexicalAnalysis
                             allWords.Insert(j+d, new Token(chooseTokenTypeByValue(identifiers[d]), identifiers[d], column, line));
                         }
                         j=j+identifiers.Length;
+                    }
+                    else
+                    {
+                        j++;
+                    }
+                    
+                }
+                
+                j = 0;
+                while (j<allWords.Count-1)
+                {
+                    if (allWords[j].Type==TokenType.Value && allWords[j+1].Type==TokenType.Value && (allWords[j].Value[0]=='\"') && (allWords[j+1].Value[0]=='\"'))
+                    {
+                        allWords[j + 1].Value = allWords[j + 1].Value.Remove(0, 1);
+                        allWords[j].Value = allWords[j].Value.Remove(allWords[j].Value.Length - 1) + "\n" +
+                                            allWords[j + 1].Value.Remove(0, 0);
+                        allWords.RemoveAt(j+1);
+                        j++;
                     }
                     else
                     {
@@ -183,7 +213,7 @@ namespace LexicalAnalysis
                 return TokenType.OpenBracket;
             }
 
-            if (val=="true" || val=="false" || (val.Length>=2 && val[0]=='\"') ||  Double.TryParse(val.Trim(), NumberStyles.Float, new CultureInfo("en-us"), out double m))
+            if (val=="true" || val=="false" || (val.Length>=2 && (val[0]=='\"'||val[val.Length-1]=='\"')) ||  Double.TryParse(val.Trim(), NumberStyles.Float, new CultureInfo("en-us"), out double m))
             {
                 return TokenType.Value;
             }

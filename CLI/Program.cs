@@ -1,6 +1,6 @@
 ﻿using DataStructures;
 using LexicalAnalysis;
-const string path = "input.txt";
+const string path = "input.java";
 
 if (!File.Exists(path))
 {
