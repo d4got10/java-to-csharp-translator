@@ -36,10 +36,9 @@ namespace LexicalAnalysis
         public static IEnumerable<Token> Parse(string text)
         {
             int numLines = CountLines(text);
-            Console.WriteLine(numLines);
             List<Token> lexems = new List<Token>();
             bool isStringValueParseNow=false;
-            for (int l = 0; l < numLines; l++)
+            for(int l = 0; l < numLines; l++)
             {
                 var currentLine = GetLine(text, l);
                 string pattern = @"([\u0022\u002F\u003D\u0025\u005B\u005D*() ,;+><!&|-}{])";

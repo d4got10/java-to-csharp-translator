@@ -7,15 +7,16 @@ namespace LexicalAnalysis;
 public class LexerUnitTest
 {
     [Test]
-    public void PassingTest()
+    public void LexerTests()
     {
         var expecteds = GetTestFilesFromFolder("expected");
         var inputs = GetTestFilesFromFolder("input");
-
+        Console.WriteLine("Tests names:");
         foreach (var input in inputs)
         {
             if (expecteds.ContainsKey(input.Key))
             {
+                Console.WriteLine(input.Key);
                 Assert.AreEqual(expecteds[input.Key], GetActual(input.Value));
             }
         }
@@ -34,7 +35,7 @@ public class LexerUnitTest
     private Dictionary<String, String> GetTestFilesFromFolder(String folder)
     {
         Dictionary<String, String> dictionary = new Dictionary<String, String>();
-        foreach (var fileName in Directory.GetFiles(AppContext.BaseDirectory+"/unit_test/"+folder))
+        foreach (var fileName in Directory.GetFiles(AppContext.BaseDirectory+"../../../unit_test/"+folder))
         {
             string[] splits;
             splits = fileName.Split("/");

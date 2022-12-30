@@ -1,0 +1,20 @@
+public void afterPropertiesSet() throws Exception {
+  ClassPathResource resource = new ClassPathResource("logo.png");
+  ImageIcon icon = new ImageIcon(resource.getURL());
+  JLabel logo = new JLabel(icon);
+  saveButton = new JButton("Save Value");
+  saveButton.addActionListener(this);
+  refreshButton = new JButton("Refresh Value");
+  refreshButton.addActionListener(this);
+  JPanel valuePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+  valuePanel.add(valueField);
+  valuePanel.add(saveButton);
+  valuePanel.add(refreshButton);
+  secureMethod1Button = new JButton("Method #1");
+  secureMethod3Button.addActionListener(this);
+  JPanel methodPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+  methodPanel.add(secureMethod1Button);
+  methodPanel.add(secureMethod2Button);
+  methodPanel.add(secureMethod3Button);
+  frame = new JFrame("Apache Shiro Sample Application");
+  frame.setSize(500, 200);
