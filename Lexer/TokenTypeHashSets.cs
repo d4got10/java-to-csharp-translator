@@ -55,7 +55,6 @@ public static class TokenTypeHashSets
         "boolean",
         "char",
         "string",
-        "String",
         "void"
     };
 

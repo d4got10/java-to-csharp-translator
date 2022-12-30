@@ -94,6 +94,20 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.4.1, )"
+            },
+            "NUnit": {
+              "target": "Package",
+              "version": "[3.13.3, )"
+            },
+            "Sandbox": {
+              "target": "Package",
+              "version": "[1.0.55, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

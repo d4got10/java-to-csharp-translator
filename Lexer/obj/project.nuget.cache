@@ -1,8 +1,64 @@
 {
   "version": 2,
-  "dgSpecHash": "1Gu+DSya1+YEAWmd4jA/qAi4QX6jS5pAMEhi8sDncgRiBSRcd3rjZmIFQh7CsZE/3rmhLcW+GZNunFbjq3LeqA==",
+  "dgSpecHash": "gIgLTCrz9wUED9HqgfbDJpwpzJrnuwtSumB95hIGA8jrWlPYgj4+prcQy+0JdZlFUhfkvVBKEf9wyl+6zLbDAg==",
   "success": true,
   "projectFilePath": "/mnt/51ca5b73-179f-4bf1-a4ea-4a85cc048421/java-to-csharp-translator/Lexer/Lexer.csproj",
-  "expectedPackageFiles": [],
-  "logs": []
+  "expectedPackageFiles": [
+    "/home/brat/.nuget/packages/microsoft.codecoverage/17.4.1/microsoft.codecoverage.17.4.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/microsoft.net.test.sdk/17.4.1/microsoft.net.test.sdk.17.4.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/microsoft.netcore.platforms/1.1.0/microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "/home/brat/.nuget/packages/microsoft.netcore.targets/1.0.1/microsoft.netcore.targets.1.0.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/microsoft.testplatform.objectmodel/17.4.1/microsoft.testplatform.objectmodel.17.4.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/microsoft.testplatform.testhost/17.4.1/microsoft.testplatform.testhost.17.4.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/netstandard.library/2.0.0/netstandard.library.2.0.0.nupkg.sha512",
+    "/home/brat/.nuget/packages/newtonsoft.json/13.0.1/newtonsoft.json.13.0.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/nuget.frameworks/5.11.0/nuget.frameworks.5.11.0.nupkg.sha512",
+    "/home/brat/.nuget/packages/nunit/3.13.3/nunit.3.13.3.nupkg.sha512",
+    "/home/brat/.nuget/packages/sandbox/1.0.55/sandbox.1.0.55.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.collections/4.0.11/system.collections.4.0.11.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.componentmodel/4.0.1/system.componentmodel.4.0.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.diagnostics.contracts/4.0.1/system.diagnostics.contracts.4.0.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.diagnostics.debug/4.0.11/system.diagnostics.debug.4.0.11.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.dynamic.runtime/4.0.11/system.dynamic.runtime.4.0.11.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.globalization/4.0.11/system.globalization.4.0.11.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.io/4.1.0/system.io.4.1.0.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.linq/4.1.0/system.linq.4.1.0.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.linq.expressions/4.1.0/system.linq.expressions.4.1.0.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.objectmodel/4.0.12/system.objectmodel.4.0.12.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.reactive/3.1.1/system.reactive.3.1.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.reactive.core/3.1.1/system.reactive.core.3.1.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.reactive.interfaces/3.1.1/system.reactive.interfaces.3.1.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.reactive.linq/3.1.1/system.reactive.linq.3.1.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.reactive.platformservices/3.1.1/system.reactive.platformservices.3.1.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.reflection/4.1.0/system.reflection.4.1.0.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.reflection.emit/4.0.1/system.reflection.emit.4.0.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.reflection.emit.ilgeneration/4.0.1/system.reflection.emit.ilgeneration.4.0.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.reflection.emit.lightweight/4.0.1/system.reflection.emit.lightweight.4.0.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.reflection.extensions/4.0.1/system.reflection.extensions.4.0.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.reflection.metadata/1.6.0/system.reflection.metadata.1.6.0.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.reflection.primitives/4.0.1/system.reflection.primitives.4.0.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.reflection.typeextensions/4.1.0/system.reflection.typeextensions.4.1.0.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.resources.resourcemanager/4.0.1/system.resources.resourcemanager.4.0.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.runtime/4.1.0/system.runtime.4.1.0.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.runtime.extensions/4.1.0/system.runtime.extensions.4.1.0.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.runtime.handles/4.0.1/system.runtime.handles.4.0.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.runtime.interopservices.windowsruntime/4.0.1/system.runtime.interopservices.windowsruntime.4.0.1.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.text.encoding/4.0.11/system.text.encoding.4.0.11.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.threading/4.0.11/system.threading.4.0.11.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.threading.tasks/4.0.11/system.threading.tasks.4.0.11.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.threading.thread/4.0.0/system.threading.thread.4.0.0.nupkg.sha512",
+    "/home/brat/.nuget/packages/system.threading.threadpool/4.0.10/system.threading.threadpool.4.0.10.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'Sandbox 1.0.55' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net6.0'. This package may not be fully compatible with your project.",
+      "libraryId": "Sandbox",
+      "targetGraphs": [
+        "net6.0"
+      ]
+    }
+  ]
 }

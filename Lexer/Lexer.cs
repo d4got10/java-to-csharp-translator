@@ -194,7 +194,7 @@ namespace LexicalAnalysis
                 return TokenType.AccessModifier;
             }
 
-            if (TokenTypeHashSets.DataTypes.Contains(val.ToLower()))
+            if (TokenTypeHashSets.DataTypes.Contains(val))
             {
                 return TokenType.Type;
             }
