@@ -2,20 +2,21 @@ namespace LexicalAnalysis;
 
 public static class TokenTypeHashSets
 {
-    public static readonly HashSet<string> accessModifiers = new HashSet<string>()
+    public static readonly HashSet<string> AccessModifiers = new HashSet<string>()
     {
         "public",
         "private",
         "protected"
     };
     
-    public static readonly HashSet<string> keyWords = new HashSet<string>()
+    public static readonly HashSet<string> KeyWords = new HashSet<string>()
     {
         "abstract",
         "break",
         "case",
         "catch",
         "class",
+        "Class",
         "continue",
         "default",
         "do",
@@ -43,7 +44,7 @@ public static class TokenTypeHashSets
         "while"
     };
     
-    public static readonly HashSet<string> dataTypes = new HashSet<string>()
+    public static readonly HashSet<string> DataTypes = new HashSet<string>()
     {
         "byte",
         "short",
@@ -58,7 +59,7 @@ public static class TokenTypeHashSets
         "void"
     };
 
-    public static readonly HashSet<string> operators = new HashSet<string>()
+    public static readonly HashSet<string> Operators = new HashSet<string>()
     {
         "=",
         "==",

@@ -20,7 +20,6 @@ namespace LexicalAnalysis
             {
                 count = text.Length - text.Replace("\n", string.Empty).Length;
 
-                // if the last char of the string is not a newline, make sure to count that line too
                 if (text[text.Length - 1] != '\n')
                 {
                     ++count;
@@ -38,140 +37,142 @@ namespace LexicalAnalysis
         {
             int numLines = CountLines(text);
             Console.WriteLine(numLines);
-            List<Token> allWords = new List<Token>();
-            bool isNowString=false;
+            List<Token> lexems = new List<Token>();
+            bool isStringValueParseNow=false;
             for (int l = 0; l < numLines; l++)
             {
-                var currentText = GetLine(text, l);
+                var currentLine = GetLine(text, l);
                 string pattern = @"([\u0022\u002F\u003D\u0025\u005B\u005D*() ,;+><!&|-}{])";
-                var words1 = Regex.Split(currentText, pattern);
-                string[,] words = new string[words1.Length, 3];
-                for(var i = 0 ; i<words1.Length; i++)
+                var currentLineWords = Regex.Split(currentLine, pattern);
+                string[,] words = new string[currentLineWords.Length, 3];
+                for(var i = 0 ; i<currentLineWords.Length; i++)
                 {
-                    words[i,0] = words1[i];
+                    words[i,0] = currentLineWords[i];
                 }
-                int row = 0;
+                int offset = 0;
                 int k=0;
-
                 for (var i = 0; i < words.GetLength(0); i++)
                 {
-                    if (words[i,0] == "\"" && isNowString)
+                    if (words[i,0] == "\"" && isStringValueParseNow)
                     {
-                        isNowString = false;
+                        isStringValueParseNow = false;
                         words[k,0] += words[i,0];
                         words[i,0] = "";
                     }
-                    if (words[i,0] == "\"" && !isNowString)
+                    if (words[i,0] == "\"" && !isStringValueParseNow)
                     {
-                        isNowString = true;
+                        isStringValueParseNow = true;
                         k = i;
                         words[i, 1] = l.ToString();
-                        words[i, 2] = row.ToString();
+                        words[i, 2] = offset.ToString();
                     }
-                    if (isNowString && words[i,0]!="\"")
+                    if (isStringValueParseNow && words[i,0]!="\"")
                     {
                         words[k,0] += words[i,0];
                         words[i,0] = "";
                         words[i, 1] = l.ToString();
-                        words[i, 2] = row.ToString();
+                        words[i, 2] = offset.ToString();
                     }
-
-                    var len = 0;
-                    if (words[i, 0] != null)
-                    {
-                        len = words[i,0].Length;
-                    }
-
-                    if (!isNowString && words[i,0]!="\"" && words[i,0]!=null && words[i,0].Length>0)
+                    
+                    if (!isStringValueParseNow && words[i,0]!="\"" && words[i,0].Length>0)
                     {
                         words[i, 0] = words[i,0];
                         words[i, 1] = l.ToString();
-                        words[i, 2] = row.ToString();
+                        words[i, 2] = offset.ToString();
                     }
 
-                    if (i==0 && isNowString)
+                    if (i==0 && isStringValueParseNow)
                     {
                         words[i, 0] = "\"" + words[k, 0];
                     }
                     
-                    if (isNowString && i == words.GetLength(0) - 1)
+                    if (isStringValueParseNow && i == words.GetLength(0) - 1)
                     {
                         words[k, 0] = words[k, 0]+"\"";
                     }
 
-                    row += len;
+                    offset += words[i,0].Length;
                 }
 
                 for (int w = 0; w < words.GetLength(0); w++)
                 {
-                    if (words[w,0]!=null && words[w,0] != "" && words[w,0] != " ")
+                    if (words[w,0] != "" && words[w,0] != " ")
                     {
-                        Token token = new Token(chooseTokenTypeByValue(words[w, 0].Trim()), words[w, 0].Trim(), Int32.Parse(words[w, 2])+1, Int32.Parse(words[w,1])+1);
-                        allWords.Add(token);
+                        Token token = new Token(ChooseTokenTypeByValue(words[w, 0].Trim()), words[w, 0].Trim(), Int32.Parse(words[w, 2])+1, Int32.Parse(words[w,1])+1);
+                        lexems.Add(token);
                     }
                 }
 
-                var j = 0;
-                while (j<allWords.Count)
-                {
-                    if (allWords[j].Type==TokenType.Identifier && allWords[j].Value.Contains(".") && !Double.TryParse(allWords[j].Value.Trim(), NumberStyles.Float, new CultureInfo("en-us"), out double m))
-                    {
-                        var prevToken = allWords[j];
-                        var line = prevToken.LineNumber;
-                        var column = prevToken.ColumnNumber;
-                        var identifiers = Regex.Split(allWords[j].Value, @"([\u002E])");
-                        allWords[j].Value = identifiers[0];
-                        for (var d = 1; d<identifiers.Length; d++)
-                        {
-                            column += identifiers[d].Length;
-                            allWords.Insert(j+d, new Token(chooseTokenTypeByValue(identifiers[d]), identifiers[d], column, line));
-                        }
-                        j=j+identifiers.Length;
-                    }
-                    else
-                    {
-                        j++;
-                    }
-                    
-                }
-                
-                j = 0;
-                while (j<allWords.Count-1)
-                {
-                    if (allWords[j].Type==TokenType.Value && allWords[j+1].Type==TokenType.Value && (allWords[j].Value[0]=='\"') && (allWords[j+1].Value[0]=='\"'))
-                    {
-                        allWords[j + 1].Value = allWords[j + 1].Value.Remove(0, 1);
-                        allWords[j].Value = allWords[j].Value.Remove(allWords[j].Value.Length - 1) + "\n" +
-                                            allWords[j + 1].Value.Remove(0, 0);
-                        allWords.RemoveAt(j+1);
-                        j++;
-                    }
-                    else
-                    {
-                        j++;
-                    }
-                    
-                }
+                SplitIdentifiersByDots(ref lexems);
+                ConcatinateMultilineStrings(ref lexems);
+
             }
             
-            for (var i = 0; i < allWords.Count; i++)
+            for (var i = 0; i < lexems.Count; i++)
             {
-                if (i < allWords.Count - 1 && allWords[i].Value.Length>0 && allWords[i+1].Value.Length>0 && isBinaryOperator(allWords[i].Value, allWords[i+1].Value))
+                if (i < lexems.Count - 1 && lexems[i].Value.Length>0 && lexems[i+1].Value.Length>0 && IsTwoSymbolOperator(lexems[i].Value, lexems[i+1].Value))
                 {
-                    allWords[i].Value = allWords[i].Value+allWords[i+1].Value;
-                    allWords[i + 1].Value = "";
+                    lexems[i].Value = lexems[i].Value+lexems[i+1].Value;
+                    lexems[i + 1].Value = "";
                 }
             }
 
-            allWords.RemoveAll(v => v.Value == "");
-            allWords.RemoveAll(v => v.Value == " ");
-            allWords.RemoveAll(v => v.Value == "\n");
-            return allWords;
+            lexems.RemoveAll(v => v.Value == "");
+            lexems.RemoveAll(v => v.Value == " ");
+            lexems.RemoveAll(v => v.Value == "\n");
+            return lexems;
         }
 
-        private static bool isBinaryOperator(string a, string b)
+
+        private static void ConcatinateMultilineStrings(ref List<Token> lexems)
         {
-            foreach (var op in TokenTypeHashSets.operators)
+            int j = 0;
+            while (j<lexems.Count-1)
+            {
+                if (lexems[j].Type==TokenType.Value && lexems[j+1].Type==TokenType.Value && (lexems[j].Value[0]=='\"') && (lexems[j+1].Value[0]=='\"'))
+                {
+                    lexems[j + 1].Value = lexems[j + 1].Value.Remove(0, 1);
+                    lexems[j].Value = lexems[j].Value.Remove(lexems[j].Value.Length - 1) + "\n" +
+                                      lexems[j + 1].Value.Remove(0, 0);
+                    lexems.RemoveAt(j+1);
+                    j++;
+                }
+                else
+                {
+                    j++;
+                }
+                    
+            }
+        }
+        private static void SplitIdentifiersByDots(ref List<Token> lexems)
+        {
+            var j = 0;
+            while (j<lexems.Count)
+            {
+                if (lexems[j].Type==TokenType.Identifier && lexems[j].Value.Contains(".") && !Double.TryParse(lexems[j].Value.Trim(), NumberStyles.Float, new CultureInfo("en-us"), out double m))
+                {
+                    var prevToken = lexems[j];
+                    var line = prevToken.LineNumber;
+                    var column = prevToken.ColumnNumber;
+                    var identifiers = Regex.Split(lexems[j].Value, @"([\u002E])");
+                    lexems[j].Value = identifiers[0];
+                    for (var d = 1; d<identifiers.Length; d++)
+                    {
+                        column += identifiers[d].Length;
+                        lexems.Insert(j+d, new Token(ChooseTokenTypeByValue(identifiers[d]), identifiers[d], column, line));
+                    }
+                    j=j+identifiers.Length;
+                }
+                else
+                {
+                    j++;
+                }
+            }
+        }
+        
+        private static bool IsTwoSymbolOperator(string a, string b)
+        {
+            foreach (var op in TokenTypeHashSets.Operators)
             {
                 if (op.Length==2 && op[0]==a[0] && op[1]==b[0])
                 {
@@ -181,24 +182,24 @@ namespace LexicalAnalysis
             return false;
         }
 
-        private static TokenType chooseTokenTypeByValue(string val)
+        private static TokenType ChooseTokenTypeByValue(string val)
         {
-            if (TokenTypeHashSets.operators.Contains(val))
+            if (TokenTypeHashSets.Operators.Contains(val))
             {
                 return TokenType.Operator;
             }
 
-            if (TokenTypeHashSets.accessModifiers.Contains(val))
+            if (TokenTypeHashSets.AccessModifiers.Contains(val))
             {
                 return TokenType.AccessModifier;
             }
 
-            if (TokenTypeHashSets.dataTypes.Contains(val.ToLower()))
+            if (TokenTypeHashSets.DataTypes.Contains(val.ToLower()))
             {
                 return TokenType.Type;
             }
 
-            if (TokenTypeHashSets.keyWords.Contains(val))
+            if (TokenTypeHashSets.KeyWords.Contains(val))
             {
                 return TokenType.Keyword;
             }
@@ -213,7 +214,7 @@ namespace LexicalAnalysis
                 return TokenType.OpenBracket;
             }
 
-            if (val=="true" || val=="false" || (val.Length>=2 && (val[0]=='\"'||val[val.Length-1]=='\"')) ||  Double.TryParse(val.Trim(), NumberStyles.Float, new CultureInfo("en-us"), out double m))
+            if (val=="true" || val=="false" || (val.Length>=2 && (val[0]=='\"'||val[^1]=='\"')) ||  Double.TryParse(val.Trim(), NumberStyles.Float, new CultureInfo("en-us"), out double m))
             {
                 return TokenType.Value;
             }
