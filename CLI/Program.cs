@@ -1,6 +1,8 @@
 ﻿using DataStructures;
 using LexicalAnalysis;
-const string path = "input.java";
+using SyntaxAnalysis;
+
+string path = args.Length > 0 ? args[0] : "input.java";
 
 if (!File.Exists(path))
 {
@@ -15,5 +17,14 @@ var lexemes = Lexer.Parse(ReadFile(path));
 foreach(var lexeme in lexemes)
     Console.WriteLine(lexeme.Type+" " +lexeme.Value + " " + lexeme.LineNumber +":"+lexeme.ColumnNumber);
 
+var syntax = new SyntaxAnalyzer();
+if (syntax.Parse(lexemes))
+{
+    Console.WriteLine("Заебись!");
+}
+else
+{
+    Console.WriteLine("Всё хуево!");
+}
 
 static string ReadFile(string path) => File.ReadAllText(path);
