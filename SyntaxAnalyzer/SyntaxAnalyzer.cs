@@ -1,21 +1,27 @@
-﻿using DataStructures;
+﻿using System.Collections;
+using System.Text.RegularExpressions;
+using DataStructures;
 
 namespace SyntaxAnalysis;
 
 public class SyntaxAnalyzer
 {
     private List<Token> _tokens = new();
+    private SyntaxMessages _messages;
     
     public bool Parse(IEnumerable<Token> tokens)
     {
         _tokens = tokens.ToList();
 
         var stack = new Stack<string>();
+        var semanticStack = new Stack<string>();
         int inputIndex = 0;
         bool success = true;
 
         var token = GetNextToken(ref inputIndex);
-        
+
+        _messages = new SyntaxMessages();
+        _messages.LoadMessagesFromFile("syntax_errors.json");
         var grammar = new Grammar(); 
         grammar.BuildFromFile("grammar.txt");
         grammar.Process();
@@ -33,7 +39,7 @@ public class SyntaxAnalyzer
             if(grammar.IsTerminal(top)) 
             {
                 // If there is a match
-                if(grammar.ExtractTerminal(top) == GetValue(token)) 
+                if(grammar.ExtractTerminal(top) == GetName(token)) 
                 {
                     // Start over by scanning new input and processing a new top
                     stack.Pop();
@@ -50,13 +56,14 @@ public class SyntaxAnalyzer
             } 
             else if(grammar.IsSemanticAction(top)) 
             {
+                semanticStack.Push(GetName(_tokens[inputIndex - 2]));
                 stack.Pop();
             } 
             else 
             { // It is a non-terminal
 
                 // Get record from the parse table
-                List<string> production = grammar.GetParseTable(top, GetValue(token));
+                List<string> production = grammar.GetParseTable(top, GetName(token));
                 
                 // Check if the record exists or it is an error
                 if(production != null) 
@@ -76,27 +83,18 @@ public class SyntaxAnalyzer
                 } 
                 else 
                 { // Error found
-                    // Generate error message in the first parsing phase
-                    // if(!m_silentSyntaxErrorMessages) {
-                    //     std::cerr << generateErrorMessage(fileName, top, lexicalTokens, inputIndex-1)
-                    //               << std::endl;
-                    // }
+                    Console.WriteLine(GenerateErrorMessage("fileName", top, _tokens, inputIndex - 1));
                     success = false;
 
                     // If terminal is in the follow set or there is no more input to process,
                     // then pop the parse stack
                     var followSet = grammar.GetFollowSet(top);
-                    if(followSet != null && followSet.Contains(GetValue(token)) ||
-                       stack.Peek() == Grammar.EndOfStack) {
+                    if(followSet != null && followSet.Contains(GetName(token)) ||
+                       GetName(token) == Grammar.EndOfStack) {
                         stack.Pop();
                     } else {
                         token = GetNextToken(ref inputIndex);
                     }
-
-                    // Broadcast error
-                    // if(m_onSyntaxError) {
-                    //     this->m_onSyntaxError();
-                    // }
                 }
             }
         }
@@ -104,10 +102,7 @@ public class SyntaxAnalyzer
         if(stack.Peek() != Grammar.EndOfStack) 
         {
             // Generate error message in the first parsing phase
-            // if(!m_silentSyntaxErrorMessages) {
-            //     std::cerr << generateErrorMessage(fileName, parseStack.top(), lexicalTokens, inputIndex-1) << std::endl;
-            // }
-            Console.WriteLine($"Stack is not empty: {stack.Peek()}");
+            Console.WriteLine(GenerateErrorMessage("fileName", stack.Peek(), _tokens, inputIndex-1));
             success = false;
         }
 
@@ -124,40 +119,55 @@ public class SyntaxAnalyzer
             : null;
     }
 
-    private const string Eps = "~"; 
-
-    private Dictionary<string, string[]> GetRules()
+    private string GenerateErrorMessage(string fileName, string nonTerminal, List<Token> tokens, int index) 
     {
-        return new Dictionary<string, string[]>
-        {   
-            {"E", new[]{"TE\'"}},
-            {"E\'", new[]{"+TE\'", Eps}},
-            {"T", new []{"FT\'"}},
-            {"T\'", new []{"*FT\'", Eps}},
-            {"F", new []{"id", "(E)"}}
-        };
-    }
+        // Load error message
+        string message = _messages.GetErrorMessage(nonTerminal, GetName(_tokens[index]));
+        string messageCopy = message;
 
-    private Dictionary<(string, string), string> CreateTable(Dictionary<string, string[]> rules)
-    {
-        var dict = new Dictionary<(string, string), string>();
+        // Match error messages
+        var exp = new Regex("(\\$\\{lexical(\\.(?:next|previous))*\\.(?:value|name|line|column)\\})");
+        var matches = exp.Matches(messageCopy);
+        foreach(Match match in matches) {
+            // Split by dot
+            string matchValue = match.Value;
+            var words = matchValue.Split('.');
 
-        var first = new Dictionary<string, HashSet<string>>();
-        foreach (var (left, rights) in rules)
-        {
-            foreach (var right in rights)
-            {
-                if (right == Eps)
-                {
-                    first[left].Add(right);
+            // Navigate to the correct token
+            int newIndex = index;
+            for(int i = 1; i < words.Length - 1; i++) {
+                if(words[i] == "next") {
+                    newIndex++;
+                } else if(words[i] == "previous") {
+                    newIndex--;
                 }
             }
-        }
-        
-        return dict;
-    }
 
-    private string GetValue(Token? token)
+            string newValue = "";
+
+            // If new index is not found
+            if(newIndex < 0 || newIndex >= _tokens.Count) {
+                newValue = "undefined";
+            } else {
+                string type = words[^1].Substring(0, words[^1].Length - 1);
+                if (type == "value") {
+                    newValue = _tokens[newIndex].Value;
+                } else if (type == "name") {
+                    newValue = GetName(_tokens[newIndex]);
+                } else if (type == "line") {
+                    newValue = _tokens[newIndex].LineNumber.ToString();
+                } else if (type == "column") {
+                    newValue = _tokens[newIndex].ColumnNumber.ToString();
+                }
+            }
+
+            message = message.Replace(matchValue, newValue);
+        }
+
+        return message;
+    }
+    
+    private string GetName(Token? token)
     {
         if (token == null)
             return Grammar.EndOfStack;
