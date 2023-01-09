@@ -1,5 +1,4 @@
-﻿using DataStructures;
-using LexicalAnalysis;
+﻿using LexicalAnalysis;
 using SyntaxAnalysis;
 
 string path = args.Length > 0 ? args[0] : "input.java";
@@ -17,10 +16,13 @@ var lexemes = Lexer.Parse(ReadFile(path));
 foreach(var lexeme in lexemes)
     Console.WriteLine(lexeme.Type+" " +lexeme.Value + " " + lexeme.LineNumber +":"+lexeme.ColumnNumber);
 
+var semanticMessenger = new SemanticMessenger();
+
 var syntax = new SyntaxAnalyzer();
-if (syntax.Parse(lexemes))
+if (syntax.Parse(lexemes, semanticMessenger))
 {
     Console.WriteLine("Заебись!");
+    semanticMessenger.DisplayStack();
 }
 else
 {

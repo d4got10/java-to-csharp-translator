@@ -9,7 +9,7 @@ public class SyntaxAnalyzer
     private List<Token> _tokens = new();
     private SyntaxMessages _messages;
     
-    public bool Parse(IEnumerable<Token> tokens)
+    public bool Parse(IEnumerable<Token> tokens, SemanticMessenger messenger)
     {
         _tokens = tokens.ToList();
 
@@ -20,10 +20,11 @@ public class SyntaxAnalyzer
 
         var token = GetNextToken(ref inputIndex);
 
+
         _messages = new SyntaxMessages();
         _messages.LoadMessagesFromFile("syntax_errors.json");
         var grammar = new Grammar(); 
-        grammar.BuildFromFile("grammar.txt");
+        grammar.BuildFromFile("grammar.json");
         grammar.Process();
         
         stack.Push(Grammar.EndOfStack);
@@ -36,7 +37,7 @@ public class SyntaxAnalyzer
             var top = stack.Peek();
 
             // Check the type of the token
-            if(grammar.IsTerminal(top)) 
+            if(grammar.IsTerminal(top))
             {
                 // If there is a match
                 if(grammar.ExtractTerminal(top) == GetName(token)) 
@@ -56,8 +57,8 @@ public class SyntaxAnalyzer
             } 
             else if(grammar.IsSemanticAction(top)) 
             {
-                semanticStack.Push(GetName(_tokens[inputIndex - 2]));
                 stack.Pop();
+                messenger.Message(top, _tokens, inputIndex - 2);
             } 
             else 
             { // It is a non-terminal
@@ -79,7 +80,6 @@ public class SyntaxAnalyzer
                             stack.Push(production[^(1+i)]);
                         }
                     }
-
                 } 
                 else 
                 { // Error found
@@ -89,8 +89,11 @@ public class SyntaxAnalyzer
                     // If terminal is in the follow set or there is no more input to process,
                     // then pop the parse stack
                     var followSet = grammar.GetFollowSet(top);
-                    if(followSet != null && followSet.Contains(GetName(token)) ||
-                       GetName(token) == Grammar.EndOfStack) {
+                    if(followSet != null 
+                       && followSet.Contains(GetName(token)) 
+                       || GetName(token) == Grammar.EndOfStack) 
+                    {
+                        semanticStack.Push(top);
                         stack.Pop();
                     } else {
                         token = GetNextToken(ref inputIndex);
@@ -106,9 +109,6 @@ public class SyntaxAnalyzer
             success = false;
         }
 
-        // BOOST_LOG(ecc_logger::get()) << "Finished parsing the lexical tokens [PHASE " << m_phase << "]";
-        // BOOST_LOG(ecc_logger::get()) << (success ? "SUCCESS" : "FAILURE");
-        // BOOST_LOG(ecc_logger::get()) << "----------";
         return success;
     }
 
@@ -171,28 +171,16 @@ public class SyntaxAnalyzer
     {
         if (token == null)
             return Grammar.EndOfStack;
-        
+
         return token.Type switch
         {
-            TokenType.Keyword => throw new ArgumentOutOfRangeException(),
-            TokenType.Operator => token.Value switch
-            {
-                "+" => "T_PLUS",
-                "-" => "T_MINUS",
-                "*" => "T_MULTIPLY",
-                "(" => "T_OPEN_PAR",
-                ")" => "T_CLOSE_PAR",
-                _ => throw new ArgumentOutOfRangeException()
-            },
-            TokenType.Type => throw new ArgumentOutOfRangeException(),
-            TokenType.Identifier => throw new ArgumentOutOfRangeException(),
-            TokenType.Semicolon => "T_SEMICOLON",
-            TokenType.AccessModifier => throw new ArgumentOutOfRangeException(),
-            TokenType.Value => "T_INTEGER",
-            TokenType.OpenBracket => throw new ArgumentOutOfRangeException(),
-            TokenType.CloseBracket => throw new ArgumentOutOfRangeException(),
-            TokenType.Comma => throw new ArgumentOutOfRangeException(),
-            _ => throw new ArgumentOutOfRangeException()
+            TokenType.AccessModifier => token.Value,
+            TokenType.Operator => token.Value,
+            TokenType.Keyword => token.Value,
+            TokenType.CloseBracket => token.Value,
+            TokenType.OpenBracket => token.Value,
+            TokenType.Semicolon => token.Value,
+            _ => token.Type.ToString()
         };
     }
 }

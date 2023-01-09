@@ -280,24 +280,24 @@ public class Grammar
         foreach(var definition in _productions) {
             string leftRecursiveToken = GetLeftRecursion(definition.Key, new HashSet<string>());
             if (!string.IsNullOrWhiteSpace(leftRecursiveToken)) {
-                ThrowError("Left hand side: " + leftRecursiveToken + " has a left recursion");
+                ThrowError("Left hand side: " + leftRecursiveToken + " has a left recursion. Production: " + definition.Key);
             }
         }
-
-        // Cond 2
-        foreach(var definition in _productions) {
-            var uniqueFirstSetValues = new HashSet<string>();
-            foreach(var production in _productions[definition.Key]) {
-                foreach(var token in _productionFirstSet[production]) {
-                    if(uniqueFirstSetValues.Contains(token)) {
-                        ThrowError("The first set of the rules of the non-terminal: " +
-                                   definition.Key + " intersect at " + token);
-                    } else {
-                        uniqueFirstSetValues.Add(token);
-                    }
-                }
-            }
-        }
+        
+        // // Cond 2
+        // foreach(var definition in _productions) {
+        //     var uniqueFirstSetValues = new HashSet<string>();
+        //     foreach(var production in _productions[definition.Key]) {
+        //         foreach(var token in _productionFirstSet[production]) {
+        //             if(uniqueFirstSetValues.Contains(token)) {
+        //                 ThrowError("The first set of the rules of the non-terminal: " +
+        //                            definition.Key + " intersect at " + token);
+        //             } else {
+        //                 uniqueFirstSetValues.Add(token);
+        //             }
+        //         }
+        //     }
+        // }
 
         // Cond 3
         foreach(var firstPair in _firstSet) 
@@ -373,9 +373,6 @@ public class Grammar
             if (string.IsNullOrWhiteSpace(nonTerminal)) 
                 ThrowError("A non-terminal key cannot be empty");
 
-            if(nonTerminal.Any(c => (c < 'A' || c > 'Z') && c != '_'))
-                ThrowError("Non terminals should be composed of upper case letters only.");
-            
             if(_productions.ContainsKey(nonTerminal))
                 ThrowError("All definition for the non-terminal " + nonTerminal +
                          " should be grouped in the array value");
@@ -459,8 +456,8 @@ public class Grammar
         return last;
     }
     
-    public string GetLeftRecursion(string token, HashSet<string> visited) {
-
+    public string GetLeftRecursion(string token, HashSet<string> visited)
+    {
         // If visited more than once
         if(visited.Contains(token)) {
             return token;
@@ -490,6 +487,7 @@ public class Grammar
             }
         }
 
+        visited.Remove(token);
         // No left recursion found
         return "";
     }
