@@ -166,7 +166,7 @@ public class SyntaxAnalyzer
 
         return message;
     }
-    
+
     private string GetName(Token? token)
     {
         if (token == null)
@@ -180,6 +180,8 @@ public class SyntaxAnalyzer
             TokenType.CloseBracket => token.Value,
             TokenType.OpenBracket => token.Value,
             TokenType.Semicolon => token.Value,
+            TokenType.Comma => token.Value,
+            TokenType.Type => "Identifier",
             _ => token.Type.ToString()
         };
     }

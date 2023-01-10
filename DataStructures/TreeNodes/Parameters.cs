@@ -2,7 +2,7 @@
 
 public class Parameters : Node
 {
-    public List<Variable> Variables = new();
+    public List<VariableDeclaration> Variables = new();
     
     public override string ToString()
     {

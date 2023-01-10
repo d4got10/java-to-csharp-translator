@@ -2,8 +2,8 @@
 
 public class FunctionDeclaration : Node
 {
-    public Variable Data;
-    public string AccessModifier;
+    public VariableDeclaration Data;
+    public Token AccessModifier;
     public bool IsStatic;
     public List<Instruction> Instructions = new();
     public Parameters Parameters;

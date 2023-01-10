@@ -1,4 +1,5 @@
 ﻿using LexicalAnalysis;
+using SemanticAnalysis;
 using SyntaxAnalysis;
 
 string path = args.Length > 0 ? args[0] : "input.java";
@@ -13,20 +14,27 @@ if (!File.Exists(path))
 }
 
 var lexemes = Lexer.Parse(ReadFile(path));
-foreach(var lexeme in lexemes)
-    Console.WriteLine(lexeme.Type+" " +lexeme.Value + " " + lexeme.LineNumber +":"+lexeme.ColumnNumber);
+// foreach(var lexeme in lexemes)
+//     Console.WriteLine(lexeme.Type+" " +lexeme.Value + " " + lexeme.LineNumber +":"+lexeme.ColumnNumber);
 
 var semanticMessenger = new SemanticMessenger();
 
 var syntax = new SyntaxAnalyzer();
-if (syntax.Parse(lexemes, semanticMessenger))
+if (!syntax.Parse(lexemes, semanticMessenger))
 {
-    Console.WriteLine("Заебись!");
-    semanticMessenger.DisplayStack();
+    Console.WriteLine("Андрей тут ашибка");
+    return;
 }
-else
+
+//A.frun(... , b.func())
+
+var semanticAnalyzer = new SemanticAnalyzer();
+if (!semanticAnalyzer.Analyze(semanticMessenger.Root))
 {
-    Console.WriteLine("Всё хуево!");
+    Console.WriteLine("Андрей я не панимаю");
+    return;
 }
+
+Console.WriteLine("Андрей спасибо всё харошо");
 
 static string ReadFile(string path) => File.ReadAllText(path);

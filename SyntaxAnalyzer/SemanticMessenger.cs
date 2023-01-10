@@ -5,6 +5,8 @@ namespace SyntaxAnalysis;
 
 public class SemanticMessenger
 {
+    public Node Root => _stack.Peek();
+    
     private readonly Stack<Node> _stack = new();
 
     public void DisplayStack()
@@ -22,25 +24,65 @@ public class SemanticMessenger
             case "#push#":
                 _stack.Push(new DataNode
                 {
-                    Value = tokens[index].Value
+                    Value = tokens[index]
                 });
+                break;
+            case "#type#":
+                _stack.Push(new TypeNode
+                {
+                    Name = ((DataNode)_stack.Pop()).Value
+                });
+                break;
+            case "#initialization#":
+                var initializationValue = (Expression)_stack.Pop();
+                var declaration = (VariableDeclaration)_stack.Pop();
+                _stack.Push(new InitializedVariableDeclaration
+                {
+                    Type = declaration.Type,
+                    Name = declaration.Name,
+                    Value = initializationValue
+                });
+                break;
+            case "#args_start#":
+                _stack.Push(new ArgumentsStart());
+                break;
+            case "#args_end#":
+                var arguments = new List<Expression>();
+                while (_stack.TryPeek(out var top) && top is not ArgumentsStart) 
+                    arguments.Add((Expression)_stack.Pop());
+                _stack.Pop();
+                _stack.Push(new Arguments
+                {
+                    Expressions = arguments
+                });
+                break;
+            case "#value_expression#":
+                _stack.Pop();
+                _stack.Push(new ValueExpression());
+                break;
+            case "#unary_expression#":
+                _stack.Pop();
+                _stack.Pop();
+                _stack.Push(new UnaryExpression());
+                break;
+            case "#binary_expression#":
+                _stack.Pop();
+                _stack.Pop();
+                _stack.Pop();
+                _stack.Push(new BinaryExpression());
                 break;
             case "#assign#":
                 _stack.Push(new Assignment
                 {
-                    Value = ((DataNode)_stack.Pop()).Value,
-                    Variable = (Variable)_stack.Pop(),
+                    Value = (Expression)_stack.Pop(),
+                    VariableName = ((DataNode)_stack.Pop()).Value,
                 });
                 break;
             case "#static#":
                 _stack.Push(new Static());
                 break;
             case "#array_type#":
-                var typeNode = (DataNode)_stack.Pop();
-                _stack.Push(new DataNode
-                {
-                    Value = typeNode.Value + "[]"
-                });
+                ((TypeNode)_stack.Peek()).IsArrayType = true;
                 break;
             case "#class_declaration#":
                 var classMethods = new List<FunctionDeclaration>();
@@ -58,23 +100,30 @@ public class SemanticMessenger
                 _stack.Push(new ParametersStart());
                 break;
             case "#params_end#":
-                var parameters = new List<Variable>();
+                var parameters = new List<VariableDeclaration>();
                 while (_stack.TryPeek(out var top) && top is not ParametersStart) 
-                    parameters.Add((Variable)_stack.Pop());
+                    parameters.Add((VariableDeclaration)_stack.Pop());
                 _stack.Pop();
                 _stack.Push(new Parameters
                 {
                     Variables = parameters
                 });
                 break;
+            case "#dot#":
+                //TODO: object.object
+                break;
+            case "#function_call#":
+                //TODO: call on object
+                _stack.Pop();
+                break;
             case "#function_declaration#":
                 var instructions = new List<Instruction>();
                 
                 while (_stack.TryPeek(out var top) && top is Instruction) 
-                    instructions.Add((Instruction)_stack.Pop());
+                    instructions.Insert(0, (Instruction)_stack.Pop());
                 
                 var functionParameters = (Parameters)_stack.Pop();
-                var functionData = (Variable)_stack.Pop();
+                var functionData = (VariableDeclaration)_stack.Pop();
                 bool isStatic = _stack.Peek() is Static;
                 if (isStatic)
                     _stack.Pop();
@@ -88,10 +137,10 @@ public class SemanticMessenger
                 });
                 break;
             case "#declaration#":
-                _stack.Push(new Variable
+                _stack.Push(new VariableDeclaration
                 {
                     Name = ((DataNode)_stack.Pop()).Value,
-                    Type = ((DataNode)_stack.Pop()).Value,
+                    Type = (TypeNode)_stack.Pop(),
                 });
                 break;
             case "#instruction#":
@@ -102,10 +151,27 @@ public class SemanticMessenger
                 break;
             case "#statement#":
                 break;
+            case "#for#":
+                var forInstructions = new List<Instruction>();
+                while (_stack.Peek() is Instruction)
+                    forInstructions.Insert(0, (Instruction)_stack.Pop());
+                
+                _stack.Push(new For
+                {
+                    Instructions = forInstructions,
+                    Expression = (Assignment)_stack.Pop(),
+                    Comparison = (Comparison)_stack.Pop(),
+                    Iterator = (VariableDeclaration)_stack.Pop(),
+                });
+                break;
             case "#while#":
+                var whileInstructions = new List<Instruction>();
+                while (_stack.Peek() is Instruction)
+                    whileInstructions.Insert(0, (Instruction)_stack.Pop());
+                
                 _stack.Push(new While
                 {
-                    Statement = _stack.Pop(),
+                    Instructions = whileInstructions,
                     Comparison = (Comparison)_stack.Pop(),
                 });
                 break;

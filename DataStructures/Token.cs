@@ -14,4 +14,9 @@ public class Token
         ColumnNumber = columnNumber;
         LineNumber = lineNumber;
     }
+
+    public override string ToString()
+    {
+        return Value;
+    }
 }

@@ -2,7 +2,7 @@
 
 public class DataNode : Node
 {
-    public string Value;
+    public Token Value;
 
     public override string ToString()
     {

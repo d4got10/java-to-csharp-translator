@@ -27,7 +27,7 @@ public class Grammar
         ComputeFirstSet();
         ComputeFollowSet();
         
-        CheckFFKeys();
+        //CheckFFKeys();
         Validate();
         
         BuildParseTable();
@@ -284,20 +284,20 @@ public class Grammar
             }
         }
         
-        // // Cond 2
-        // foreach(var definition in _productions) {
-        //     var uniqueFirstSetValues = new HashSet<string>();
-        //     foreach(var production in _productions[definition.Key]) {
-        //         foreach(var token in _productionFirstSet[production]) {
-        //             if(uniqueFirstSetValues.Contains(token)) {
-        //                 ThrowError("The first set of the rules of the non-terminal: " +
-        //                            definition.Key + " intersect at " + token);
-        //             } else {
-        //                 uniqueFirstSetValues.Add(token);
-        //             }
-        //         }
-        //     }
-        // }
+        //Cond 2
+        foreach(var definition in _productions) {
+            var uniqueFirstSetValues = new HashSet<string>();
+            foreach(var production in _productions[definition.Key]) {
+                foreach(var token in _productionFirstSet[production]) {
+                    if(uniqueFirstSetValues.Contains(token)) {
+                        ThrowError("The first set of the rules of the non-terminal: " +
+                                   definition.Key + " intersect at " + token);
+                    } else {
+                        uniqueFirstSetValues.Add(token);
+                    }
+                }
+            }
+        }
 
         // Cond 3
         foreach(var firstPair in _firstSet) 

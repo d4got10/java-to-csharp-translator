@@ -3,10 +3,10 @@
 public class While : Node
 {
     public Comparison Comparison;
-    public Node Statement;
+    public List<Instruction> Instructions = new();
     
     public override string ToString()
     {
-        return $"While node: while ({Comparison}) {{ ({Statement} }}";
+        return $"While node: while ({Comparison}) {{ ({GetString(Instructions)} }}";
     }
 }

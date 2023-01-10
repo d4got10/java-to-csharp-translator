@@ -2,8 +2,8 @@
 
 public class ClassDeclaration : Node
 {
-    public string Name;
-    public string AccessModifier;
+    public Token Name;
+    public Token AccessModifier;
     public List<FunctionDeclaration> Functions = new();
     
     public override string ToString()

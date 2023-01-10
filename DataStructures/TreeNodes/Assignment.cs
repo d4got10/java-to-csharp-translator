@@ -2,11 +2,11 @@
 
 public class Assignment : Node
 {
-    public Variable Variable;
-    public string Value;
+    public Token VariableName;
+    public Expression Value;
 
     public override string ToString()
     {
-        return $"Assignment node: ({Variable}) = {Value}";
+        return $"Assignment node: ({VariableName}) = {Value}";
     }
 }
