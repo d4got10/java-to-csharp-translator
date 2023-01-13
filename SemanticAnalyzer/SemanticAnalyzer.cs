@@ -5,10 +5,11 @@ namespace SemanticAnalysis;
 
 public class SemanticAnalyzer
 {
-    private readonly HashSet<string> _usedWords = new();
-    private readonly Dictionary<string, string> _definedWordTypes = new();
-
-    private Context _context = new();
+    private Context _context = new(new HashSet<string>
+        {
+            "System.println"
+        }, 
+        new Dictionary<string, string>());
     
     public bool Analyze(Node root)
     {
@@ -19,13 +20,51 @@ public class SemanticAnalyzer
             FunctionDeclaration functionDeclaration => AnalyzeFunctionDeclaration(functionDeclaration),
             InitializedVariableDeclaration initializedVariableDeclaration => AnalyzeInitializedVariableDeclaration(initializedVariableDeclaration),
             VariableDeclaration variable => AnalyzeVariableDeclaration(variable),
+            FunctionCall functionCall => AnalyzeFunctionCall(functionCall),
             Instruction instruction => AnalyzeInstruction(instruction),
             While @while => AnalyzeWhile(@while),
             For @for => AnalyzeFor(@for),
             Comparison comparison => AnalyzeComparison(comparison),
             Assignment assignment => AnalyzeAssignment(assignment),
+            Expression expression => AnalyzeExpression(expression),
             _ => throw new Exception("Unknown node type: " + root.GetType())
         };
+    }
+
+    private bool AnalyzeExpression(Expression node)
+    {
+        switch (node)
+        {
+            case ValueExpression value:
+                if (value.Value.Value.Type == TokenType.Identifier &&!_context.CheckWord(value.Value.Value.Value))
+                {
+                    LogUnknownNameError(value.Value.Value);
+                    return false;
+                }
+                return true;
+            case UnaryExpression unary:
+                return true;
+            case BinaryExpression binary:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private bool AnalyzeFunctionCall(FunctionCall node)
+    {
+        if (!_context.CheckWord(node.Name.Value.Value))
+        {
+            LogUnknownNameError(node.Name.Value);
+            return false;
+        }
+
+        bool ok = true;
+        foreach (Expression expression in node.Arguments.Expressions)
+        {
+            ok &= Analyze(expression);
+        }
+        return ok;
     }
 
     private bool AnalyzeInitializedVariableDeclaration(InitializedVariableDeclaration node)
@@ -35,7 +74,7 @@ public class SemanticAnalyzer
             _context.SetWordType(node.Name.Value, node.Type.Name.Value);
             return true;
         }
-        LogError($"Name {node.Name} is already used", node.Name);
+        LogNameAlreadyUsedError(node.Name);
         return false;
     }
 
@@ -43,7 +82,7 @@ public class SemanticAnalyzer
     {
         if (!_context.CheckWord(node.Value.Value))
         {
-            LogError($"Unknown name {node.Value}", node.Value);
+            LogUnknownNameError(node.Value);
             return false;
         }
         return true;
@@ -70,30 +109,32 @@ public class SemanticAnalyzer
     private bool AnalyzeComparison(Comparison node)
     {
         bool ok = true;
-        if (node.Left is DataNode left && node.Right is DataNode right)
-        {
-            if (!_context.WordHasType(left.Value.Value))
-            {
-                LogError($"Unknown name {left.Value}", left.Value);
-                ok = false;
-            }
-
-            if (!_context.WordHasType(right.Value.Value))
-            {
-                LogError($"Unknown name {right.Value}", right.Value);
-                ok = false;
-            }
-
-            if (!ok) return false;
-            
-            var leftType = _context.GetWordType(left.Value.Value);
-            var rightType = _context.GetWordType(right.Value.Value);
-            if (leftType != rightType)
-            {
-                LogError($"Can't compare type {leftType} to type {rightType}", left.Value);
-                ok = false;
-            }
-        }
+        // if (node.Left is Expression left && node.Right is Expression right)
+        // {
+        //     if (!_context.WordHasType(left.Value.Value))
+        //     {
+        //         LogUnknownNameError(left.Value);
+        //         ok = false;
+        //     }
+        //
+        //     if (!_context.WordHasType(right.Value.Value))
+        //     {
+        //         LogUnknownNameError(right.Value);
+        //         ok = false;
+        //     }
+        //
+        //     if (!ok) return false;
+        //     
+        //     var leftType = _context.GetWordType(left.Value.Value);
+        //     var rightType = _context.GetWordType(right.Value.Value);
+        //     if (leftType != rightType)
+        //     {
+        //         LogError($"Can't compare type {leftType} to type {rightType}", left.Value);
+        //         ok = false;
+        //     }
+        // }
+        ok &= Analyze(node.Left);
+        ok &= Analyze(node.Right);
 
         return ok;
     }
@@ -133,7 +174,7 @@ public class SemanticAnalyzer
     {
         if (_context!.CheckWord(node.Name.Value))
         {
-            LogError($"Name {node.Name} is already used", node.Name);
+            LogNameAlreadyUsedError(node.Name);
             return false;
         }
         _context.ReserveWord(node.Name.Value);
@@ -156,8 +197,18 @@ public class SemanticAnalyzer
             _context.SetWordType(node.Name.Value, node.Type.Name.Value);
             return true;
         }
-        LogError($"Name {node.Name} is already used", node.Name);
+        LogNameAlreadyUsedError(node.Name);
         return false;
+    }
+
+    private void LogNameAlreadyUsedError(Token token)
+    {
+        LogError($"Name {token} is already used", token);
+    }
+
+    private void LogUnknownNameError(Token token)
+    {
+        LogError($"Unknown name {token}", token);
     }
 
     private void LogError(string message, Token token)

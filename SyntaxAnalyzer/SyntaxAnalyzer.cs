@@ -6,9 +6,19 @@ namespace SyntaxAnalysis;
 
 public class SyntaxAnalyzer
 {
+    public SyntaxAnalyzer(string grammarPath, string errorsPath)
+    {
+        _grammarPath = grammarPath;
+        _errorsPath = errorsPath;
+        _messages = new SyntaxMessages();
+    }
+
+    private readonly string _grammarPath;
+    private readonly string _errorsPath;
+    
     private List<Token> _tokens = new();
     private SyntaxMessages _messages;
-    
+
     public bool Parse(IEnumerable<Token> tokens, SemanticMessenger messenger)
     {
         _tokens = tokens.ToList();
@@ -19,12 +29,10 @@ public class SyntaxAnalyzer
         bool success = true;
 
         var token = GetNextToken(ref inputIndex);
-
-
-        _messages = new SyntaxMessages();
-        _messages.LoadMessagesFromFile("syntax_errors.json");
+        
+        _messages.LoadMessagesFromFile(_errorsPath);
         var grammar = new Grammar(); 
-        grammar.BuildFromFile("grammar.json");
+        grammar.BuildFromFile(_grammarPath);
         grammar.Process();
         
         stack.Push(Grammar.EndOfStack);

@@ -57,19 +57,25 @@ public class SemanticMessenger
                 });
                 break;
             case "#value_expression#":
-                _stack.Pop();
-                _stack.Push(new ValueExpression());
+                _stack.Push(new ValueExpression
+                {
+                    Value = (DataNode)_stack.Pop()
+                });
                 break;
             case "#unary_expression#":
-                _stack.Pop();
-                _stack.Pop();
-                _stack.Push(new UnaryExpression());
+                _stack.Push(new UnaryExpression
+                {
+                    Value = (Expression)_stack.Pop(),
+                    Operator = (DataNode)_stack.Pop()
+                });
                 break;
             case "#binary_expression#":
-                _stack.Pop();
-                _stack.Pop();
-                _stack.Pop();
-                _stack.Push(new BinaryExpression());
+                _stack.Push(new BinaryExpression
+                {
+                    Left = (Expression)_stack.Pop(),
+                    Operator = (DataNode)_stack.Pop(),
+                    Right = (Expression)_stack.Pop()
+                });
                 break;
             case "#assign#":
                 _stack.Push(new Assignment
@@ -110,11 +116,21 @@ public class SemanticMessenger
                 });
                 break;
             case "#dot#":
-                //TODO: object.object
+                var popped = ((DataNode)_stack.Pop()).Value;
+                var parent = ((DataNode)_stack.Pop()).Value;
+                _stack.Push(new DataNode
+                {
+                    Value = new Token(parent.Type, parent.Value + "." + popped.Value, parent.ColumnNumber, parent.LineNumber)
+                });
                 break;
             case "#function_call#":
-                //TODO: call on object
-                _stack.Pop();
+                var callArguments = (Arguments)_stack.Pop();
+                var name = (DataNode)_stack.Pop();
+                _stack.Push(new FunctionCall
+                {
+                    Arguments = callArguments,
+                    Name = name
+                });
                 break;
             case "#function_declaration#":
                 var instructions = new List<Instruction>();
@@ -180,9 +196,9 @@ public class SemanticMessenger
             case "#comparison#":
                 _stack.Push(new Comparison
                 {
-                    Right = _stack.Pop(),
-                    Operator = _stack.Pop(),
-                    Left = _stack.Pop()
+                    Right = (Expression)_stack.Pop(),
+                    Operator = (DataNode)_stack.Pop(),
+                    Left = (Expression)_stack.Pop()
                 });
                 break;
             default:

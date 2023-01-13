@@ -1,0 +1,10 @@
+﻿{
+  "default_message": "[Syntax Analyzer] Привует Андрей прости я долго не ответил. Встречено ${lexical.value} at line ${lexical.line} and column ${lexical.column}",
+  "error_messages": [
+    {
+      "non_terminal": ":any",
+      "terminal": "=",
+      "message": "[Syntax Analyzer] Андрей я не понимаю ${lexical.value} at line ${lexical.line} and column ${lexical.column}"
+    }
+  ]
+}

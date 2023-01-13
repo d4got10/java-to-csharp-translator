@@ -2,9 +2,11 @@
 
 public class Context
 {
-    public Context()
+    public Context(HashSet<string> definedWords, Dictionary<string, string> definedTypes)
     {
         OuterContext = null;
+        _usedWords = definedWords;
+        _wordTypes = definedTypes;
     }
     
     public Context(Context outerContext)
