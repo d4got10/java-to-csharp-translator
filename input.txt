@@ -2,6 +2,11 @@
 {
     public static void Main(String[] args)
     {
-        println ( a ) ;
+        int a = 50;
+        System.println(a);
+        
+        for(int i = 0; i == 5; i = i + 1){
+            System.println(i);
+        }
     }
 }
