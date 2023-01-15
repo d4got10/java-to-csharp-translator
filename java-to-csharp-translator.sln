@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyntaxAnalyzer", "SyntaxAna
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataStructures", "DataStructures\DataStructures.csproj", "{F09AAE83-F893-4DE7-9BA4-4D22B0A703FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI", "GUI\GUI.csproj", "{D7531823-01CA-4026-B375-EBA8D1A93C6A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{7C15BCDB-DC82-4741-ACF0-73C192DB509F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,9 +44,9 @@ Global
 		{F09AAE83-F893-4DE7-9BA4-4D22B0A703FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F09AAE83-F893-4DE7-9BA4-4D22B0A703FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F09AAE83-F893-4DE7-9BA4-4D22B0A703FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D7531823-01CA-4026-B375-EBA8D1A93C6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D7531823-01CA-4026-B375-EBA8D1A93C6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D7531823-01CA-4026-B375-EBA8D1A93C6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D7531823-01CA-4026-B375-EBA8D1A93C6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C15BCDB-DC82-4741-ACF0-73C192DB509F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C15BCDB-DC82-4741-ACF0-73C192DB509F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C15BCDB-DC82-4741-ACF0-73C192DB509F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C15BCDB-DC82-4741-ACF0-73C192DB509F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

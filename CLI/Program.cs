@@ -3,9 +3,9 @@ using LexicalAnalysis;
 using SemanticAnalysis;
 using SyntaxAnalysis;
 
-string path = args.Length > 0 ? args[0] : throw new ArgumentNullException("Не указан путь к файлу с исходным кодом");
-string grammarPath = args.Length > 1 ? args[1] : throw new ArgumentNullException("Не указан путь к граматике");
-string syntaxErrorsPath = args.Length > 2 ? args[2] : throw new ArgumentNullException("Не указан путь к ошибкам синтаксиса");
+string path = args.Length > 0 ? args[0] : throw new Exception("Не указан путь к файлу с исходным кодом");
+string grammarPath = args.Length > 1 ? args[1] : throw new Exception("Не указан путь к граматике");
+string syntaxErrorsPath = args.Length > 2 ? args[2] : throw new Exception("Не указан путь к ошибкам синтаксиса");
 
 if (!File.Exists(path))
 {
@@ -16,7 +16,8 @@ if (!File.Exists(path))
     return;
 }
 
-var lexemes = Lexer.Parse(ReadFile(path));
+var lexer = new Lexer();
+var lexemes = lexer.Parse(ReadFile(path));
 // foreach(var lexeme in lexemes)
 //     Console.WriteLine(lexeme.Type+" " +lexeme.Value + " " + lexeme.LineNumber +":"+lexeme.ColumnNumber);
 

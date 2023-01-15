@@ -3,10 +3,10 @@
     public static void Main(String[] args)
     {
         int a = 50;
-        System.println(a);
+        System.out.println(a);
         
         for(int i = 0; i == 5; i = i + 1){
-            System.println(i);
+            System.out.println(i);
         }
     }
 }

@@ -26,7 +26,7 @@ public class LexerUnitTest
     private string GetActual(String input)
     {
         string actual = "";
-        var lexemes = Lexer.Parse(input);
+        var lexemes = new Lexer().Parse(input);
         foreach(var lexeme in lexemes)
             actual = actual + lexeme.Type+" " +lexeme.Value + " " + lexeme.LineNumber +":"+lexeme.ColumnNumber + "\n";
         return actual;

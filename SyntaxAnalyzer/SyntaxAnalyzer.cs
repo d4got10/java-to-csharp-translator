@@ -10,15 +10,13 @@ public class SyntaxAnalyzer
     {
         _grammarPath = grammarPath;
         _errorsPath = errorsPath;
-        _messages = new SyntaxMessages();
     }
 
+    private SyntaxMessages _messages;
     private readonly string _grammarPath;
     private readonly string _errorsPath;
     
     private List<Token> _tokens = new();
-    private SyntaxMessages _messages;
-
     public bool Parse(IEnumerable<Token> tokens, SemanticMessenger messenger)
     {
         _tokens = tokens.ToList();
@@ -30,7 +28,9 @@ public class SyntaxAnalyzer
 
         var token = GetNextToken(ref inputIndex);
         
+        _messages = new SyntaxMessages();
         _messages.LoadMessagesFromFile(_errorsPath);
+        
         var grammar = new Grammar(); 
         grammar.BuildFromFile(_grammarPath);
         grammar.Process();

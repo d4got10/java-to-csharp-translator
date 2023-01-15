@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Андрей Приувейт</title>
+        
+    <style type="text/css">    
+           * { margin: 0; padding: 0; }
+           textarea{
+           	position: relative;
+		    display: block;
+		    background: #fff;
+		    border-radius: 31px;
+		    font-family: Ubuntu-Bold;
+		    font-size: 14px;
+		    color: #8f8fa1;
+		    line-height: 1.2;
+           	width: 100%;
+           	height: 600px;
+           	padding: 2%;
+           }
+           p { padding: 10px; }
+           #left { position: relative; padding-right: 1%; width: 48%; }
+           #right { position: relative; padding-left: 1%;width: 48%; } 
+           .subm{
+  background: #339DFF;
+  color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  line-height: 38px;
+  border-radius: 50px;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  width: 170px;
+  text-align: center;
+      display: block;
+    margin-left: auto;
+    margin-right: auto;
+           }
+        </style>
+</head>
+
+<body>
+<div>
+    <div>
+        <form action="/" method="post">
+            <div style="display: flex;">
+                <div id="left">
+                    <p>Исходный код на Java:</p>
+                    <textarea name="text">@ViewBag.Prev</textarea>
+                </div>
+
+                <div id="right">
+                    <p>Результат на C#:</p>
+                    <textarea>@ViewBag.Message</textarea>
+                </div>
+            </div>
+            <input class="subm" type="submit" name="submit" value="ТРАНСЛИРОВАТ">
+        </form>
+    </div>
+</div>
+</body>
+</html>

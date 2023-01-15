@@ -5,15 +5,15 @@ using DataStructures;
 namespace LexicalAnalysis
 {
 
-    public static class Lexer
+    public class Lexer
     {
-        private static string GetLine(string text, int lineNo)
+        private string GetLine(string text, int lineNo)
         {
             string[] lines = text.Split('\n');
             return lines[lineNo];
         }
         
-        private static int CountLines(string text)
+        private int CountLines(string text)
         {
             int count = 0;
             if (!string.IsNullOrEmpty(text))
@@ -33,7 +33,7 @@ namespace LexicalAnalysis
         /// </summary>
         /// <param name="text">Text to parse</param>
         /// <returns>Collection of tokens(Token)</returns>
-        public static IEnumerable<Token> Parse(string text)
+        public IEnumerable<Token> Parse(string text)
         {
             int numLines = CountLines(text);
             List<Token> lexems = new List<Token>();
@@ -123,7 +123,7 @@ namespace LexicalAnalysis
         }
 
 
-        private static void ConcatinateMultilineStrings(ref List<Token> lexems)
+        private void ConcatinateMultilineStrings(ref List<Token> lexems)
         {
             int j = 0;
             while (j<lexems.Count-1)
@@ -143,7 +143,7 @@ namespace LexicalAnalysis
                     
             }
         }
-        private static void SplitIdentifiersByDots(ref List<Token> lexems)
+        private void SplitIdentifiersByDots(ref List<Token> lexems)
         {
             var j = 0;
             while (j<lexems.Count)
@@ -169,7 +169,7 @@ namespace LexicalAnalysis
             }
         }
         
-        private static bool IsTwoSymbolOperator(string a, string b)
+        private bool IsTwoSymbolOperator(string a, string b)
         {
             foreach (var op in TokenTypeHashSets.Operators)
             {
@@ -181,7 +181,7 @@ namespace LexicalAnalysis
             return false;
         }
 
-        private static TokenType ChooseTokenTypeByValue(string val)
+        private TokenType ChooseTokenTypeByValue(string val)
         {
             if (TokenTypeHashSets.Operators.Contains(val))
             {
