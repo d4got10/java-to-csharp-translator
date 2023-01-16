@@ -111,7 +111,12 @@ public class SemanticAnalyzer
 
     private bool AnalyzeAssignment(Assignment node)
     {
-        return _context.CheckWord(node.VariableName.Value);
+        if (!_context.CheckWord(node.VariableName.Value))
+        {
+            LogUnknownNameError(node.VariableName);
+            return false;
+        }
+        return true;
     }
 
     private bool AnalyzeComparison(Comparison node)
