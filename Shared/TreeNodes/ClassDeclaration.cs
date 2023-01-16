@@ -1,4 +1,4 @@
-﻿namespace DataStructures.TreeNodes;
+﻿namespace Shared.TreeNodes;
 
 public class ClassDeclaration : Node
 {

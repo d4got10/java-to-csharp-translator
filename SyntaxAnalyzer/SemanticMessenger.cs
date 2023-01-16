@@ -1,5 +1,5 @@
-﻿using DataStructures;
-using DataStructures.TreeNodes;
+﻿using Shared;
+using Shared.TreeNodes;
 
 namespace SyntaxAnalysis;
 

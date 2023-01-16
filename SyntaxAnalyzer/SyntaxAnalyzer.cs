@@ -1,17 +1,20 @@
 ﻿using System.Collections;
 using System.Text.RegularExpressions;
-using DataStructures;
+using Shared;
+using Shared.Logs;
 
 namespace SyntaxAnalysis;
 
 public class SyntaxAnalyzer
 {
-    public SyntaxAnalyzer(string grammarPath, string errorsPath)
+    public SyntaxAnalyzer(string grammarPath, string errorsPath, ILogger logger)
     {
         _grammarPath = grammarPath;
         _errorsPath = errorsPath;
+        _logger = logger;
     }
 
+    private readonly ILogger _logger;
     private SyntaxMessages _messages;
     private readonly string _grammarPath;
     private readonly string _errorsPath;
@@ -91,7 +94,7 @@ public class SyntaxAnalyzer
                 } 
                 else 
                 { // Error found
-                    Console.WriteLine(GenerateErrorMessage("fileName", top, _tokens, inputIndex - 1));
+                    _logger.WriteLine(GenerateErrorMessage("fileName", top, _tokens, inputIndex - 1));
                     success = false;
 
                     // If terminal is in the follow set or there is no more input to process,
@@ -113,7 +116,7 @@ public class SyntaxAnalyzer
         if(stack.Peek() != Grammar.EndOfStack) 
         {
             // Generate error message in the first parsing phase
-            Console.WriteLine(GenerateErrorMessage("fileName", stack.Peek(), _tokens, inputIndex-1));
+            _logger.WriteLine(GenerateErrorMessage("fileName", stack.Peek(), _tokens, inputIndex-1));
             success = false;
         }
 
@@ -130,7 +133,7 @@ public class SyntaxAnalyzer
     private string GenerateErrorMessage(string fileName, string nonTerminal, List<Token> tokens, int index) 
     {
         // Load error message
-        string message = _messages.GetErrorMessage(nonTerminal, GetName(_tokens[index]));
+        string message = _messages.GetErrorMessage(nonTerminal, GetName(tokens[index]));
         string messageCopy = message;
 
         // Match error messages

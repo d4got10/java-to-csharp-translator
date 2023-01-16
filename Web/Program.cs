@@ -1,3 +1,4 @@
+using Shared.Logs;
 using SyntaxAnalysis;
 
 var builder = WebApplication.CreateBuilder();
@@ -5,7 +6,9 @@ var builder = WebApplication.CreateBuilder();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddSingleton(new SyntaxAnalyzer(args[0], args[1]));
+var logger = new LazyLogger();
+builder.Services.AddScoped<LazyLogger>();
+builder.Services.AddScoped<SyntaxAnalyzer>(sp => new SyntaxAnalyzer(args[0], args[1], sp.GetService<LazyLogger>()!));
 
 var app = builder.Build();
 
@@ -17,7 +20,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();

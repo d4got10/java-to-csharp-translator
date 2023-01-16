@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using DataStructures.TreeNodes;
+using Shared.TreeNodes;
 
 namespace CodeGeneration;
 
@@ -89,7 +89,7 @@ public class CodeGenerator
         {
             builder.Append(Generate(instruction, tabCount + 1) + "\n");
         }
-        builder.Append(AddTabs(tabCount) + "}\n");
+        builder.Append(AddTabs(tabCount) + "}");
         
         return builder.ToString();
     }
@@ -121,7 +121,7 @@ public class CodeGenerator
         builder.Append(AddTabs(tabCount) + "{\n");
         foreach (Instruction instruction in node.Instructions)
         {
-            builder.Append(Generate(instruction, tabCount + 1) + ";\n");
+            builder.Append(Generate(instruction, tabCount + 1) + "\n");
         }
         builder.Append(AddTabs(tabCount) + "}");
         return builder.ToString();

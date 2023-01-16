@@ -1,6 +1,7 @@
 ﻿using CodeGeneration;
 using LexicalAnalysis;
 using SemanticAnalysis;
+using Shared.Logs;
 using SyntaxAnalysis;
 
 string path = args.Length > 0 ? args[0] : throw new Exception("Не указан путь к файлу с исходным кодом");
@@ -16,6 +17,8 @@ if (!File.Exists(path))
     return;
 }
 
+var logger = new LazyLogger();
+
 var lexer = new Lexer();
 var lexemes = lexer.Parse(ReadFile(path));
 // foreach(var lexeme in lexemes)
@@ -23,17 +26,19 @@ var lexemes = lexer.Parse(ReadFile(path));
 
 var semanticMessenger = new SemanticMessenger();
 
-var syntax = new SyntaxAnalyzer(grammarPath, syntaxErrorsPath);
+var syntax = new SyntaxAnalyzer(grammarPath, syntaxErrorsPath, logger);
 if (!syntax.Parse(lexemes, semanticMessenger))
 {
     Console.WriteLine("Андрей тут ашибка");
+    Console.WriteLine(logger.GetLogs());
     return;
 }
 
-var semanticAnalyzer = new SemanticAnalyzer();
+var semanticAnalyzer = new SemanticAnalyzer(logger);
 if (!semanticAnalyzer.Analyze(semanticMessenger.Root))
 {
     Console.WriteLine("Андрей я не панимаю");
+    Console.WriteLine(logger.GetLogs());
     return;
 }
 

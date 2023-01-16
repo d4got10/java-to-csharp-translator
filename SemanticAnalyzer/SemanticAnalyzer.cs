@@ -1,16 +1,24 @@
-﻿using DataStructures;
-using DataStructures.TreeNodes;
+﻿using Shared;
+using Shared.Logs;
+using Shared.TreeNodes;
 
 namespace SemanticAnalysis;
 
 public class SemanticAnalyzer
 {
+    public SemanticAnalyzer(ILogger logger)
+    {
+        _logger = logger;
+    }
+
     private Context _context = new(new HashSet<string>
         {
             "System.out.println"
         }, 
         new Dictionary<string, string>());
-    
+
+    private readonly ILogger _logger;
+
     public bool Analyze(Node root)
     {
         return root switch
@@ -213,6 +221,6 @@ public class SemanticAnalyzer
 
     private void LogError(string message, Token token)
     {
-        Console.WriteLine($"[Semantic Analyzer] Error at line {token.LineNumber} and column {token.ColumnNumber}: {message}");
+        _logger.WriteLine($"[Semantic Analyzer] Error at line {token.LineNumber} and column {token.ColumnNumber}: {message}");
     }
 }
