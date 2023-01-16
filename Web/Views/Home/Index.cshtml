@@ -5,9 +5,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Андрей Приувейт</title>
-        
+
     <style type="text/css">    
            * { margin: 0; padding: 0; }
            textarea{
@@ -51,17 +51,36 @@
             <div style="display: flex;">
                 <div id="left">
                     <p>Исходный код на Java:</p>
-                    <textarea name="text">@ViewBag.Prev</textarea>
+                    <textarea id="inputArea"  name="text">@ViewBag.Prev</textarea>
                 </div>
 
                 <div id="right">
                     <p>Результат на C#:</p>
-                    <textarea>@ViewBag.Message</textarea>
+                    <textarea readonly>@ViewBag.Message</textarea>
                 </div>
             </div>
             <input class="subm" type="submit" name="submit" value="ТРАНСЛИРОВАТ">
         </form>
     </div>
 </div>
+    <script type="text/javascript">
+        var myInput = document.getElementById("inputArea");
+        if(myInput.addEventListener ) {
+            myInput.addEventListener('keydown',this.keyHandler,false);
+        } else if(myInput.attachEvent ) {
+            myInput.attachEvent('onkeydown',this.keyHandler); /* damn IE hack */
+        }
+    
+        function keyHandler(e) {
+            var TABKEY = 9;
+            if(e.keyCode == TABKEY) {
+                this.value += "    ";
+                if(e.preventDefault) {
+                    e.preventDefault();
+                }
+                return false;
+            }
+        }
+    </script>
 </body>
 </html>
