@@ -34,10 +34,24 @@ public class CodeGenerator
             For @for => GenerateFor(@for, tabCount),
             Comparison comparison => GenerateComparison(comparison),
             BinaryExpression binaryExpression => GenerateBinaryExpression(binaryExpression),
+            While @while => GenerateWhile(@while, tabCount),
             _ => AddTabs(tabCount) + root.GetType().ToString()!
         };
     }
 
+    private string GenerateWhile(While node, int tabCount)
+    {
+        var builder = new StringBuilder();
+        builder.Append(AddTabs(tabCount) + $"while ({Generate(node.Comparison)})\n");
+        builder.Append(AddTabs(tabCount) + "{\n");
+        foreach (var instruction in node.Instructions)
+        {
+            builder.Append(Generate(instruction, tabCount + 1) + "\n");
+        }
+        builder.Append(AddTabs(tabCount) + "}");
+        
+        return builder.ToString();
+    }
     private string GenerateBinaryExpression(BinaryExpression node)
     {
         return $"{Generate(node.Left)} {node.Operator.Value.Value} {Generate(node.Right)}";
