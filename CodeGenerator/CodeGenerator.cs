@@ -36,6 +36,7 @@ public class CodeGenerator
             BinaryExpression binaryExpression => GenerateBinaryExpression(binaryExpression),
             While @while => GenerateWhile(@while, tabCount),
             Assignment assignment => GenerateAssigment(assignment),
+            DataNode dataNode => dataNode.Value.Value,
             _ => AddTabs(tabCount) + root.GetType().ToString()!
         };
     }
@@ -48,7 +49,7 @@ public class CodeGenerator
     private string GenerateWhile(While node, int tabCount)
     {
         var builder = new StringBuilder();
-        builder.Append(AddTabs(tabCount) + $"while ({Generate(node.Comparison)})\n");
+        builder.Append($"while ({Generate(node.Comparison)})\n");
         builder.Append(AddTabs(tabCount) + "{\n");
         foreach (var instruction in node.Instructions)
         {
@@ -82,7 +83,7 @@ public class CodeGenerator
 
     private string GenerateFunctionCall(FunctionCall node, int tabCount)
     {
-        return AddTabs(tabCount) + $"{_equalityTable[node.Name.Value.Value]}({Generate(node.Arguments)})";
+        return $"{_equalityTable[node.Name.Value.Value]}({Generate(node.Arguments)})";
     }
 
     private string GenerateValueExpression(ValueExpression node, int tabCount)
@@ -97,13 +98,13 @@ public class CodeGenerator
 
     private string GenerateInitializedVariableDeclaration(InitializedVariableDeclaration node, int tabCount)
     {
-        return AddTabs(tabCount) + $"{Generate(node.Type)} {node.Name} = {Generate(node.Value)}";
+        return $"{Generate(node.Type)} {node.Name} = {Generate(node.Value)}";
     }
 
     private string GenerateFor(For node, int tabCount)
     {
         var builder = new StringBuilder();
-        builder.Append(AddTabs(tabCount) + $"for ({Generate(node.Iterator)}; {Generate(node.Comparison)}; {Generate(node.Iterator)})\n");
+        builder.Append($"for ({Generate(node.Iterator)}; {Generate(node.Comparison)}; {Generate(node.Iterator)})\n");
         builder.Append(AddTabs(tabCount) + "{\n");
         foreach (var instruction in node.Instructions)
         {
@@ -118,7 +119,7 @@ public class CodeGenerator
     {
         bool needSemicolon = !_dontNeedSemicolon.Contains(node.Inner.GetType());
         
-        return Generate(node.Inner, tabCount) + (needSemicolon ? ";" : "");
+        return AddTabs(tabCount) + Generate(node.Inner, tabCount) + (needSemicolon ? ";" : "");
     }
 
     private string GenerateVariableDeclaration(VariableDeclaration variableDeclaration, int tabCount)
@@ -131,7 +132,7 @@ public class CodeGenerator
     private string GenerateFunctionDeclaration(FunctionDeclaration node, int tabCount)
     {
         var builder = new StringBuilder();
-        builder.Append(AddTabs(tabCount) + $"{node.AccessModifier.Value} {(node.IsStatic ? "static" : "")} {Generate(node.Data, tabCount + 1)} (");
+        builder.Append($"{node.AccessModifier.Value} {(node.IsStatic ? "static" : "")} {Generate(node.Data, tabCount + 1)} (");
         for (int i = 0; i < node.Parameters.Variables.Count - 1; i++)
         {
             builder.Append(Generate(node.Parameters.Variables[i], tabCount + 1) + ", ");
@@ -150,7 +151,7 @@ public class CodeGenerator
     private string GenerateClassDeclaration(ClassDeclaration node, int tabCount)
     {
         var builder = new StringBuilder();
-        builder.Append(AddTabs(tabCount) + $"{node.AccessModifier.Value} class {node.Name.Value}\n");
+        builder.Append($"{node.AccessModifier.Value} class {node.Name.Value}\n");
         builder.Append(AddTabs(tabCount) + "{\n");
         foreach (FunctionDeclaration functionDeclaration in node.Functions)
         {
