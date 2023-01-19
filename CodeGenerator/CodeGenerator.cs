@@ -35,10 +35,16 @@ public class CodeGenerator
             Comparison comparison => GenerateComparison(comparison),
             BinaryExpression binaryExpression => GenerateBinaryExpression(binaryExpression),
             While @while => GenerateWhile(@while, tabCount),
+            Assignment assignment => GenerateAssigment(assignment),
             _ => AddTabs(tabCount) + root.GetType().ToString()!
         };
     }
 
+    private string GenerateAssigment(Assignment node)
+    {
+        return $"{node.VariableName} = {Generate(node.Value)}";
+    }
+        
     private string GenerateWhile(While node, int tabCount)
     {
         var builder = new StringBuilder();
