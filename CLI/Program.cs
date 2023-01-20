@@ -21,8 +21,8 @@ var logger = new LazyLogger();
 
 var lexer = new Lexer();
 var lexemes = lexer.Parse(ReadFile(path));
-// foreach(var lexeme in lexemes)
-//     Console.WriteLine(lexeme.Type+" " +lexeme.Value + " " + lexeme.LineNumber +":"+lexeme.ColumnNumber);
+foreach(var lexeme in lexemes)
+    Console.WriteLine(lexeme.Type+" " +lexeme.Value + " " + lexeme.LineNumber +":"+lexeme.ColumnNumber);
 
 var semanticMessenger = new SemanticMessenger();
 

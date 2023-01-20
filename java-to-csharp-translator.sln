@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{7C15BCDB-DC82-4741-ACF0-73C192DB509F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslatorTests", "TranslatorTests\TranslatorTests.csproj", "{428AB7F4-ADB6-4340-8D61-61A292F19F5D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,9 @@ Global
 		{7C15BCDB-DC82-4741-ACF0-73C192DB509F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C15BCDB-DC82-4741-ACF0-73C192DB509F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C15BCDB-DC82-4741-ACF0-73C192DB509F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{428AB7F4-ADB6-4340-8D61-61A292F19F5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{428AB7F4-ADB6-4340-8D61-61A292F19F5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{428AB7F4-ADB6-4340-8D61-61A292F19F5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{428AB7F4-ADB6-4340-8D61-61A292F19F5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -65,16 +65,22 @@ public class SemanticMessenger
             case "#unary_expression#":
                 _stack.Push(new UnaryExpression
                 {
-                    Value = (Expression)_stack.Pop(),
-                    Operator = (DataNode)_stack.Pop()
+                    Operator = (DataNode)_stack.Pop(),
+                    Value = (Expression)_stack.Pop()
                 });
                 break;
             case "#binary_expression#":
                 _stack.Push(new BinaryExpression
                 {
-                    Left = (Expression)_stack.Pop(),
+                    Right = (Expression)_stack.Pop(),
                     Operator = (DataNode)_stack.Pop(),
-                    Right = (Expression)_stack.Pop()
+                    Left = (Expression)_stack.Pop()
+                });
+                break;
+            case "#unary_assign#":
+                _stack.Push(new Assignment
+                {
+                    
                 });
                 break;
             case "#assign#":

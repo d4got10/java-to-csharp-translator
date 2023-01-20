@@ -1,0 +1,16 @@
+﻿public class Program
+{
+    public static void Main(String[] args)
+    {
+        int i;
+        double d;
+        string s;
+        float f;
+        char c;
+        int ii = 1;
+        double dd = 6.0;
+        float ff = 3.2;
+        string ss = "andrew";
+        char cc = 'c';
+    }
+}

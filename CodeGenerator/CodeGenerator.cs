@@ -49,14 +49,13 @@ public class CodeGenerator
     private string GenerateWhile(While node, int tabCount)
     {
         var builder = new StringBuilder();
-        builder.Append($"while ({Generate(node.Comparison)})\n");
+        builder.Append($"while({Generate(node.Comparison)})\n");
         builder.Append(AddTabs(tabCount) + "{\n");
         foreach (var instruction in node.Instructions)
         {
             builder.Append(Generate(instruction, tabCount + 1) + "\n");
         }
         builder.Append(AddTabs(tabCount) + "}");
-        
         return builder.ToString();
     }
     private string GenerateBinaryExpression(BinaryExpression node)
@@ -132,7 +131,7 @@ public class CodeGenerator
     private string GenerateFunctionDeclaration(FunctionDeclaration node, int tabCount)
     {
         var builder = new StringBuilder();
-        builder.Append($"{node.AccessModifier.Value} {(node.IsStatic ? "static" : "")} {Generate(node.Data, tabCount + 1)} (");
+        builder.Append(AddTabs(tabCount) + $"{node.AccessModifier.Value} {(node.IsStatic ? "static" : "")} {Generate(node.Data, tabCount + 1)}(");
         for (int i = 0; i < node.Parameters.Variables.Count - 1; i++)
         {
             builder.Append(Generate(node.Parameters.Variables[i], tabCount + 1) + ", ");
