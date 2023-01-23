@@ -208,6 +208,7 @@ public class SemanticMessenger
                 var doWhileInstructions = new List<Instruction>();
                 while (_stack.Peek() is not DoWhileStart)
                     doWhileInstructions.Add((Instruction)_stack.Pop());
+                _stack.Pop();
                 
                 _stack.Push(new DoWhile
                 {
