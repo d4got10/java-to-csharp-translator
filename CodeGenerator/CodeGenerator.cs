@@ -13,7 +13,10 @@ public class CodeGenerator
     private readonly HashSet<Type> _dontNeedSemicolon = new()
     {
         typeof(For),
-        typeof(While)
+        typeof(While),
+        typeof(If),
+        typeof(ElseIf),
+        typeof(Else)
     };
 
     private int _tabs = 0;
@@ -34,14 +37,76 @@ public class CodeGenerator
             For @for => GenerateFor(@for, tabCount),
             Comparison comparison => GenerateComparison(comparison),
             BinaryExpression binaryExpression => GenerateBinaryExpression(binaryExpression),
+            UnaryExpression unaryExpression => GenerateUnaryExpression(unaryExpression),
             While @while => GenerateWhile(@while, tabCount),
             UnaryAssignment unaryAssignment => GenerateUnaryAssigment(unaryAssignment),
             ExpressionAssignment expressionAssignment => GenerateExpressionAssigment(expressionAssignment),
             DataNode dataNode => dataNode.Value.Value,
+            If @if => GenerateIf(@if, tabCount),
+            ElseIf elseIf => GenerateElseIf(elseIf, tabCount),
+            Else @else => GenerateElse(@else,tabCount),
+            DoWhile doWhile => GenerateDoWhile(doWhile, tabCount),
             _ => AddTabs(tabCount) + root.GetType().ToString()!
         };
     }
-
+    
+    private string GenerateDoWhile(DoWhile node, int tabCount)
+    {
+        var builder = new StringBuilder();
+        builder.Append("do\n");
+        builder.Append(AddTabs(tabCount) + "{\n");
+        foreach (var instruction in node.Instructions)
+        {
+            builder.Append(Generate(instruction, tabCount + 1) + "\n");
+        }
+        builder.Append(AddTabs(tabCount) + "}\n");
+        builder.Append(AddTabs(tabCount) + $"while({Generate(node.Comparison)})");
+        return builder.ToString();
+    }
+    
+    private string GenerateIf(If node, int tabCount)
+    {
+        var builder = new StringBuilder();
+        builder.Append($"if({Generate(node.Comparison)})\n");
+        builder.Append(AddTabs(tabCount) + "{\n");
+        foreach (var instruction in node.Instructions)
+        {
+            builder.Append(Generate(instruction, tabCount + 1) + "\n");
+        }
+        builder.Append(AddTabs(tabCount) + "}");
+        if (node.Tail is not NoTail)
+            builder.Append("\n" + AddTabs(tabCount) + Generate(node.Tail, tabCount));
+        return builder.ToString();
+    }
+    
+    private string GenerateElseIf(ElseIf node, int tabCount)
+    {
+        var builder = new StringBuilder();
+        builder.Append($"else if({Generate(node.Comparison)})\n");
+        builder.Append(AddTabs(tabCount) + "{\n");
+        foreach (var instruction in node.Instructions)
+        {
+            builder.Append(Generate(instruction, tabCount + 1) + "\n");
+        }
+        builder.Append(AddTabs(tabCount) + "}");
+        if (node.Tail is not NoTail)
+            builder.Append("\n" + AddTabs(tabCount) + Generate(node.Tail, tabCount));
+        return builder.ToString();
+    }
+    
+    private string GenerateElse(Else node, int tabCount)
+    {
+        var builder = new StringBuilder();
+        builder.Append("else\n");
+        builder.Append(AddTabs(tabCount) + "{\n");
+        foreach (var instruction in node.Instructions)
+        {
+            builder.Append(Generate(instruction, tabCount + 1) + "\n");
+        }
+        builder.Append(AddTabs(tabCount) + "}");
+        return builder.ToString();
+    }
+    
     private string GenerateExpressionAssigment(ExpressionAssignment node)
     {
         return $"{node.VariableName} = {Generate(node.Value)}";
@@ -69,6 +134,11 @@ public class CodeGenerator
         return $"{Generate(node.Left)} {node.Operator.Value.Value} {Generate(node.Right)}";
     }
 
+    private string GenerateUnaryExpression(UnaryExpression node)
+    {
+        return $"{Generate(node.Value)}{Generate(node.Operator)}";
+    }
+    
     private string GenerateComparison(Comparison node)
     {
         return GenerateBinaryExpression(node);
