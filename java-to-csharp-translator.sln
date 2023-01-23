@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyntaxAnalyzer.Tests", "Syn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lexer.Tests", "Lexer.Tests\Lexer.Tests.csproj", "{DB0B18E8-62E1-455F-8BBB-D334136356E1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SemanticAnalyzer.Tests", "SemanticAnalyzer.Tests\SemanticAnalyzer.Tests.csproj", "{03B164CE-176E-4B82-80FD-566517CCF0E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,5 +62,9 @@ Global
 		{DB0B18E8-62E1-455F-8BBB-D334136356E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB0B18E8-62E1-455F-8BBB-D334136356E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB0B18E8-62E1-455F-8BBB-D334136356E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03B164CE-176E-4B82-80FD-566517CCF0E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03B164CE-176E-4B82-80FD-566517CCF0E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03B164CE-176E-4B82-80FD-566517CCF0E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03B164CE-176E-4B82-80FD-566517CCF0E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

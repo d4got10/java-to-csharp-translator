@@ -8,9 +8,11 @@
         }
         else if(a == a)
         {
+            a = a + 1;
         }
-        else
+        else if(a == a)
         {
+            a = a + 2;
         }
     }
 }
