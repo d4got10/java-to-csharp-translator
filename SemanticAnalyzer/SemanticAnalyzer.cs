@@ -33,12 +33,14 @@ public class SemanticAnalyzer
             While @while => AnalyzeWhile(@while),
             For @for => AnalyzeFor(@for),
             Comparison comparison => AnalyzeComparison(comparison),
-            Assignment assignment => AnalyzeAssignment(assignment),
+            UnaryAssignment unaryAssignment => AnalyzeUnaryAssignment(unaryAssignment),
+            ExpressionAssignment expressionAssignment => AnalyzeExpressionAssignment(expressionAssignment),
             Expression expression => AnalyzeExpression(expression),
-            If @if => true,
-            ElseIf elseIf => true,
-            Else @else => true,
-            DoWhile doWhile => true,
+            If @if => AnalyzeIf(@if),
+            ElseIf elseIf => AnalyzeElseIf(elseIf),
+            Else @else => AnalyzeElse(@else),
+            NoTail => true,
+            DoWhile doWhile => AnalyzeDoWhile(doWhile),
             _ => throw new Exception("Unknown node type: " + root.GetType())
         };
     }
@@ -84,13 +86,51 @@ public class SemanticAnalyzer
         if (!_context.CheckWord(node.Name.Value))
         {
             _context.SetWordType(node.Name.Value, node.Type.Name.Value);
-            return true;
+            return Analyze(new ExpressionAssignment
+            {
+                VariableName = node.Name,
+                Value = node.Value
+            });
         }
         LogNameAlreadyUsedError(node.Name);
 
         return false;
     }
 
+    private bool AnalyzeIf(If node)
+    {
+        bool ok = true;
+        ok &= Analyze(node.Comparison);
+        foreach (Instruction instruction in node.Instructions)
+        {
+            ok &= Analyze(instruction);
+        }
+        ok &= Analyze(node.Tail);
+        return ok;
+    }
+
+    private bool AnalyzeElseIf(ElseIf node)
+    {
+        bool ok = true;
+        ok &= Analyze(node.Comparison);
+        foreach (Instruction instruction in node.Instructions)
+        {
+            ok &= Analyze(instruction);
+        }
+        ok &= Analyze(node.Tail);
+        return ok;
+    }
+    
+    private bool AnalyzeElse(Else node)
+    {
+        bool ok = true;
+        foreach (Instruction instruction in node.Instructions)
+        {
+            ok &= Analyze(instruction);
+        }
+        return ok;
+    }
+    
     private bool AnalyzeDataNode(DataNode node)
     {
         if (!_context.CheckWord(node.Value.Value))
@@ -114,7 +154,7 @@ public class SemanticAnalyzer
         return ok;
     }
 
-    private bool AnalyzeAssignment(Assignment node)
+    private bool AnalyzeUnaryAssignment(UnaryAssignment node)
     {
         if (!_context.CheckWord(node.VariableName.Value))
         {
@@ -124,40 +164,50 @@ public class SemanticAnalyzer
         return true;
     }
 
+    private bool AnalyzeExpressionAssignment(ExpressionAssignment node)
+    {
+        if (!_context.CheckWord(node.VariableName.Value))
+        {
+            LogUnknownNameError(node.VariableName);
+            return false;
+        }
+
+        if (!TryGetExpressionType(node.Value, out var expressionType))
+        {
+            return false;
+        }
+        var type = _context.GetWordType(node.VariableName.Value);
+        if (!CanBeConverted(expressionType, type))
+        {
+            LogIncompatibleConversionTypes(type, expressionType, node.VariableName);
+            return false;
+        }
+
+        return true;
+    }
+
     private bool AnalyzeComparison(Comparison node)
     {
         bool ok = true;
-        // if (node.Left is Expression left && node.Right is Expression right)
-        // {
-        //     if (!_context.WordHasType(left.Value.Value))
-        //     {
-        //         LogUnknownNameError(left.Value);
-        //         ok = false;
-        //     }
-        //
-        //     if (!_context.WordHasType(right.Value.Value))
-        //     {
-        //         LogUnknownNameError(right.Value);
-        //         ok = false;
-        //     }
-        //
-        //     if (!ok) return false;
-        //     
-        //     var leftType = _context.GetWordType(left.Value.Value);
-        //     var rightType = _context.GetWordType(right.Value.Value);
-        //     if (leftType != rightType)
-        //     {
-        //         LogError($"Can't compare type {leftType} to type {rightType}", left.Value);
-        //         ok = false;
-        //     }
-        // }
         ok &= Analyze(node.Left);
         ok &= Analyze(node.Right);
+        ok &= TryGetExpressionType(node.Left, node.Right, out _);
 
         return ok;
     }
 
     private bool AnalyzeWhile(While node)
+    {
+        bool ok = true;
+        _context = new Context(_context);
+        ok &= Analyze(node.Comparison);
+        foreach(var instruction in node.Instructions)
+            ok &= Analyze(instruction);
+        _context = _context.OuterContext!;
+        return ok;
+    }
+    
+    private bool AnalyzeDoWhile(DoWhile node)
     {
         bool ok = true;
         _context = new Context(_context);
@@ -229,8 +279,120 @@ public class SemanticAnalyzer
         LogError($"Unknown name {token}", token);
     }
 
+    private void LogIncompatibleTypes(string left, string right, Token where)
+    {
+        LogError($"Incompatible types in expression: {left} and {right}", where);
+    }
+
+    private void LogIncompatibleConversionTypes(string left, string right, Token where)
+    {
+        LogError($"Can't convert type {right} to type {left}", where);
+    }
+
     private void LogError(string message, Token token)
     {
         _logger.WriteLine($"[Semantic Analyzer] Error at line {token.LineNumber} and column {token.ColumnNumber}: {message}");
+    }
+
+    private bool TryGetExpressionType(Expression left, Expression right, out string type)
+    {
+        type = "";
+        if (!TryGetExpressionType(left, out var leftType) ||
+            !TryGetExpressionType(right, out var rightType))
+            return false;
+        
+        if(!TryGetExpressionType(leftType, rightType, out type))
+        {
+            LogIncompatibleTypes(leftType, rightType, GetExpressionLeftToken(left));
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool TryGetExpressionType(Expression expression, out string leftType)
+    {
+        leftType = "";
+        switch (expression)
+        {
+            case BinaryExpression leftExp:
+            {
+                return TryGetExpressionType(leftExp.Left, leftExp.Right, out leftType);
+            }
+            case UnaryExpression unaryLeftExp:
+            {
+                var name = unaryLeftExp.Value.Value.Value;
+                if (unaryLeftExp.Value.Value.Type != TokenType.Value && !_context.WordHasType(name))
+                {
+                    LogUnknownNameError(unaryLeftExp.Value.Value);
+                    return false;
+                }
+
+                leftType = unaryLeftExp.Value.Value.Type == TokenType.Value 
+                    ? _context.GetValueType(name) 
+                    : _context.GetWordType(name);
+                break;
+            }
+            case ValueExpression valueExpression:
+            {
+                var name = valueExpression.Value.Value.Value;
+                if (valueExpression.Value.Value.Type != TokenType.Value && !_context.WordHasType(name))
+                {
+                    LogUnknownNameError(valueExpression.Value.Value);
+                    return false;
+                }
+
+                leftType = valueExpression.Value.Value.Type == TokenType.Value 
+                    ? _context.GetValueType(name) 
+                    : _context.GetWordType(name);
+                break;
+            }
+        }
+
+        return true;
+    }
+
+    private Token GetExpressionLeftToken(Expression expression)
+    {
+        return expression switch
+        {
+            BinaryExpression binaryExpression => GetExpressionLeftToken(binaryExpression.Left),
+            UnaryExpression unaryExpression => unaryExpression.Value.Value,
+            ValueExpression valueExpression => valueExpression.Value.Value,
+            _ => throw new ArgumentOutOfRangeException(nameof(expression))
+        };
+    }
+    
+    private bool TryGetExpressionType(string left, string right, out string type)
+    {
+        type = "";
+        
+        if (CanBeConverted(left, right))
+        {
+            type = left;
+            return true;
+        }
+        if (CanBeConverted(right, left))
+        {
+            type = right;
+            return true;
+        }
+        
+        return false;
+    }
+
+    private bool CanBeConverted(string from, string to)
+    {
+        if (from == to) return true;
+        
+        return to switch
+        {
+            "int" => from is "float" or "double" or "char",
+            "float" => from is "double" or "int" or "char", 
+            "double" => from is "float" or "int" or "char",
+            "char" => from is "int",
+            "string" => from is "char",
+            _ => false
+        };
     }
 }

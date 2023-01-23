@@ -55,4 +55,16 @@ public class Context
         ReserveWord(word);
         _wordTypes[word] = type;
     }
+
+    public string GetValueType(string value)
+    {
+        if (value.StartsWith("\"") && value.EndsWith("\"")) return "string";
+        if (value.StartsWith("\'") && value.EndsWith("\'")) return "char";
+        if (value.Contains(".")) return "double";
+        if (value.EndsWith("f")) return "float";
+        if (value == "true" || value == "false") return "bool";
+        if (int.TryParse(value, out _)) return "int";
+
+        throw new ArgumentOutOfRangeException(nameof(value), $"Unknown value type {value}");
+    }
 }

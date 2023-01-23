@@ -44,7 +44,9 @@ public class Tests
 
         var program = WrapWithProgram(instructions);
         
-        Assert.That(_semanticAnalyzer.Analyze(program), Is.False);
+        bool result = _semanticAnalyzer.Analyze(program);
+        Console.WriteLine(_lazyLogger.GetLogs());
+        Assert.That(result, Is.False);
     }
 
     [Test]
@@ -67,7 +69,9 @@ public class Tests
 
         var program = WrapWithProgram(new List<Instruction>{ instruction });
         
-        Assert.That(_semanticAnalyzer.Analyze(program), Is.False);
+        bool result = _semanticAnalyzer.Analyze(program);
+        Console.WriteLine(_lazyLogger.GetLogs());
+        Assert.That(result, Is.False);
     }
     
     [Test]
@@ -96,7 +100,7 @@ public class Tests
                     {
                         Value = new DataNode
                         {
-                            Value = new Token(TokenType.Identifier, "5", 0, 0)
+                            Value = new Token(TokenType.Value, "5", 0, 0)
                         }
                     }
                 }
@@ -104,8 +108,10 @@ public class Tests
         };
 
         var program = WrapWithProgram(instructions);
-        
-        Assert.That(_semanticAnalyzer.Analyze(program), Is.True);
+
+        bool result = _semanticAnalyzer.Analyze(program);
+        Console.WriteLine(_lazyLogger.GetLogs());
+        Assert.That(result, Is.True);
     }
 
     private ClassDeclaration WrapWithProgram(List<Instruction> instructions)
