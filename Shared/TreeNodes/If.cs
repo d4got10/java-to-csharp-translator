@@ -19,7 +19,7 @@ public class ElseIf : IfTail
 {
     public List<Instruction> Instructions;
     public Comparison Comparison;
-    public IfTail Tail;
+    public IfTail Tail = new NoTail();
 }
 
 public class Else : IfTail
