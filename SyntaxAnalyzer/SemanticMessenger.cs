@@ -207,7 +207,7 @@ public class SemanticMessenger
                 var doWhileComparison = (Comparison)_stack.Pop();
                 var doWhileInstructions = new List<Instruction>();
                 while (_stack.Peek() is not DoWhileStart)
-                    doWhileInstructions.Add((Instruction)_stack.Pop());
+                    doWhileInstructions.Insert(0, (Instruction)_stack.Pop());
                 _stack.Pop();
                 
                 _stack.Push(new DoWhile
