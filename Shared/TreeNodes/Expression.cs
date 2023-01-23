@@ -11,7 +11,7 @@ public class ValueExpression : Expression
 
 public class UnaryExpression : Expression
 {
-    public Expression Value;
+    public DataNode Value;
     public DataNode Operator;
 }
 

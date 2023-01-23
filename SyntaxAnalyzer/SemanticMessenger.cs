@@ -66,7 +66,7 @@ public class SemanticMessenger
                 _stack.Push(new UnaryExpression
                 {
                     Operator = (DataNode)_stack.Pop(),
-                    Value = (Expression)_stack.Pop()
+                    Value = (DataNode)_stack.Pop()
                 });
                 break;
             case "#binary_expression#":
@@ -78,13 +78,16 @@ public class SemanticMessenger
                 });
                 break;
             case "#unary_assign#":
-                _stack.Push(new Assignment
+                var expression = (UnaryExpression)_stack.Pop();
+                
+                _stack.Push(new UnaryAssignment
                 {
-                    
+                    VariableName = expression.Value.Value,
+                    Operator = expression.Operator.Value
                 });
                 break;
-            case "#assign#":
-                _stack.Push(new Assignment
+            case "#expression_assign#":
+                _stack.Push(new ExpressionAssignment
                 {
                     Value = (Expression)_stack.Pop(),
                     VariableName = ((DataNode)_stack.Pop()).Value,
@@ -197,7 +200,58 @@ public class SemanticMessenger
                     Comparison = (Comparison)_stack.Pop(),
                 });
                 break;
+            case "#do_while#":
+                var doWhileComparison = (Comparison)_stack.Pop();
+                var doWhileInstructions = new List<Instruction>();
+                while (_stack.Peek() is Instruction)
+                    doWhileInstructions.Add((Instruction)_stack.Pop());
+                
+                _stack.Push(new DoWhile
+                {
+                    Instructions = doWhileInstructions,
+                    Comparison = doWhileComparison,
+                });
+                break;
             case "#condition#":
+                break;
+            case "#if#":
+                var ifInstructions = new List<Instruction>();
+                while (_stack.Peek() is Instruction)
+                    ifInstructions.Add((Instruction)_stack.Pop());
+                
+                _stack.Push(new If
+                {
+                    Instructions = ifInstructions,
+                    Comparison = (Comparison)_stack.Pop()
+                });
+                break;
+            case "#else_if#":
+                var ifNode = (If)_stack.Pop();
+                var elseIfNode = new ElseIf
+                {
+                    Instructions = ifNode.Instructions,
+                    Comparison = ifNode.Comparison
+                };
+                
+                if(_stack.Peek() is If @if)
+                    @if.Tail = elseIfNode;
+                else if (_stack.Peek() is ElseIf elseIf)
+                    elseIf.Tail = elseIfNode;
+                break;
+            case "#else#":
+                var elseInstructions = new List<Instruction>();
+                while (_stack.Peek() is Instruction)
+                    elseInstructions.Add((Instruction)_stack.Pop());
+
+                var elseNode = new Else
+                {
+                    Instructions = elseInstructions
+                };
+                
+                if(_stack.Peek() is If if2)
+                    if2.Tail = elseNode;
+                else if (_stack.Peek() is ElseIf elseIf)
+                    elseIf.Tail = elseNode;
                 break;
             case "#comparison#":
                 _stack.Push(new Comparison

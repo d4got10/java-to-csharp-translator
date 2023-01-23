@@ -3,12 +3,21 @@
 public class Assignment : Node
 {
     public Token VariableName;
+}
+
+public class ExpressionAssignment : Assignment
+{
     public Expression Value;
 
     public override string ToString()
     {
-        return $"Assignment node: ({VariableName}) = {Value}";
+        return $"Expression Assignment node: ({VariableName}) = {Value}";
     }
+}
+
+public class UnaryAssignment : Assignment
+{
+    public Token Operator;
 }
 
 public class PostfixUnaryAssignment : Node

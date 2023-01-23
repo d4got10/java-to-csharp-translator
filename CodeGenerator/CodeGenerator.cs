@@ -35,15 +35,21 @@ public class CodeGenerator
             Comparison comparison => GenerateComparison(comparison),
             BinaryExpression binaryExpression => GenerateBinaryExpression(binaryExpression),
             While @while => GenerateWhile(@while, tabCount),
-            Assignment assignment => GenerateAssigment(assignment),
+            UnaryAssignment unaryAssignment => GenerateUnaryAssigment(unaryAssignment),
+            ExpressionAssignment expressionAssignment => GenerateExpressionAssigment(expressionAssignment),
             DataNode dataNode => dataNode.Value.Value,
             _ => AddTabs(tabCount) + root.GetType().ToString()!
         };
     }
 
-    private string GenerateAssigment(Assignment node)
+    private string GenerateExpressionAssigment(ExpressionAssignment node)
     {
         return $"{node.VariableName} = {Generate(node.Value)}";
+    }
+    
+    private string GenerateUnaryAssigment(UnaryAssignment node)
+    {
+        return $"{node.VariableName}{node.Operator}";
     }
         
     private string GenerateWhile(While node, int tabCount)
@@ -103,7 +109,7 @@ public class CodeGenerator
     private string GenerateFor(For node, int tabCount)
     {
         var builder = new StringBuilder();
-        builder.Append($"for ({Generate(node.Iterator)}; {Generate(node.Comparison)}; {Generate(node.Iterator)})\n");
+        builder.Append($"for ({Generate(node.Iterator)}; {Generate(node.Comparison)}; {Generate(node.Expression)})\n");
         builder.Append(AddTabs(tabCount) + "{\n");
         foreach (var instruction in node.Instructions)
         {

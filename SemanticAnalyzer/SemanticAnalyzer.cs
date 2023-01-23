@@ -83,6 +83,7 @@ public class SemanticAnalyzer
             return true;
         }
         LogNameAlreadyUsedError(node.Name);
+
         return false;
     }
 

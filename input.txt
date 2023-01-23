@@ -3,9 +3,14 @@
     public static void Main(String[] args)
     {
         int a = 0;
-        while(a < 5)
+        if(a == a)
         {
-            a = a + 1;
+        }
+        else if(a == a)
+        {
+        }
+        else
+        {
         }
     }
 }
