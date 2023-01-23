@@ -230,7 +230,8 @@ public class SemanticMessenger
                 var elseIfNode = new ElseIf
                 {
                     Instructions = ifNode.Instructions,
-                    Comparison = ifNode.Comparison
+                    Comparison = ifNode.Comparison,
+                    Tail = ifNode.Tail
                 };
                 
                 if(_stack.Peek() is If @if)
