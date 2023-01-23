@@ -4,7 +4,7 @@ public class If : Node
 {
     public List<Instruction> Instructions;
     public Comparison Comparison;
-    public IfTail Tail;
+    public IfTail Tail = new NoTail();
 }
 
 public class IfTail : Node
