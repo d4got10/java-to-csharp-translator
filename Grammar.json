@@ -18,7 +18,7 @@
   "Initialization": ["= Expression #initialization#", "EPSILON"],
   "Identifier": ["'Identifier' #push#"],
   "Loop" : ["while ( Logical_expression ) { Code_block } #while#", "for ( Variable_declaration ; Logical_expression ; Identifier Assignment ) { Code_block } #for#", 
-    "do { Code_block } while ( Logical_expression ) ; #do_while#"],
+    "do #do_while_start# { Code_block } while ( Logical_expression ) ; #do_while#"],
   "Logical_expression": ["Math_expression Comparison_operator Math_expression #comparison#"],
   "Math_expression": ["Math_expression_A"],
   "Math_expression_A" : ["Math_expression_C Math_expression_B"],
