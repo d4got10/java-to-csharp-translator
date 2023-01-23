@@ -6,6 +6,8 @@
         <Nullable>enable</Nullable>
 
         <IsPackable>false</IsPackable>
+
+        <RootNamespace>SyntaxAnalysis.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,18 +19,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="CodeGenerator\Expected" />
-      <Folder Include="CodeGenerator\Input" />
-      <Folder Include="Lexer\Expected" />
-      <Folder Include="Lexer\Input" />
-      <Folder Include="SemanticAnalyzer\Expected" />
-      <Folder Include="SemanticAnalyzer\Input" />
-      <Folder Include="SyntaxAnalyzer\Expected" />
-      <Folder Include="SyntaxAnalyzer\Input" />
-    </ItemGroup>
-
-    <ItemGroup>
+      <ProjectReference Include="..\CodeGenerator\CodeGenerator.csproj" />
       <ProjectReference Include="..\Lexer\Lexer.csproj" />
+      <ProjectReference Include="..\SemanticAnalyzer\SemanticAnalyzer.csproj" />
+      <ProjectReference Include="..\SyntaxAnalyzer\SyntaxAnalyzer.csproj" />
     </ItemGroup>
 
 </Project>
