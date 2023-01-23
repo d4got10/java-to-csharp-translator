@@ -38,6 +38,7 @@ public class SemanticAnalyzer
             If @if => true,
             ElseIf elseIf => true,
             Else @else => true,
+            DoWhile doWhile => true,
             _ => throw new Exception("Unknown node type: " + root.GetType())
         };
     }
