@@ -35,6 +35,9 @@ public class SemanticAnalyzer
             Comparison comparison => AnalyzeComparison(comparison),
             Assignment assignment => AnalyzeAssignment(assignment),
             Expression expression => AnalyzeExpression(expression),
+            If @if => true,
+            ElseIf elseIf => true,
+            Else @else => true,
             _ => throw new Exception("Unknown node type: " + root.GetType())
         };
     }
