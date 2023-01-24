@@ -1,0 +1,12 @@
+public class Program
+{
+	public static void Main(String[] args)
+	{
+		int a;
+		int i = 10;
+		while(i > 2)
+		{
+			a = i;
+		}
+	}
+}

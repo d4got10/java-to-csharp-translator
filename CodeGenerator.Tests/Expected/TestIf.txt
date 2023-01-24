@@ -1,0 +1,11 @@
+public class Program
+{
+	public static void Main(String[] args)
+	{
+		int b = 15;
+		if(b == 15)
+		{
+			int a = 21;
+		}
+	}
+}
