@@ -7,7 +7,8 @@ public class CodeGenerator
 {
     private readonly Dictionary<string, string> _equalityTable = new()
     {
-        {"System.out.println", "Console.WriteLine"}
+        {"System.out.println", "Console.WriteLine"},
+        {"System.out.print", "Console.Write"}
     };
 
     private readonly HashSet<Type> _dontNeedSemicolon = new()
