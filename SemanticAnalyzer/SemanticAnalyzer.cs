@@ -14,7 +14,14 @@ public class SemanticAnalyzer
     private Context _context = new(new HashSet<string>
         {
             "System.out.println",
-            "String"
+            "String",
+            "int",
+            "bool",
+            "char",
+            "float",
+            "double",
+            "string",
+            "void"
         }, 
         new Dictionary<string, string>());
 
@@ -261,13 +268,18 @@ public class SemanticAnalyzer
 
     private bool AnalyzeVariableDeclaration(VariableDeclaration node)
     {
-        if (!_context.CheckWord(node.Name.Value))
+        if (!_context.CheckWord(node.Type.Name.Value))
         {
-            _context.SetWordType(node.Name.Value, node.Type.Name.Value);
-            return true;
+            LogUnknownNameError(node.Type.Name);
+            return false;
         }
-        LogNameAlreadyUsedError(node.Name);
-        return false;
+        if (_context.CheckWord(node.Name.Value))
+        {
+            LogNameAlreadyUsedError(node.Name);
+            return false;
+        }
+        _context.SetWordType(node.Name.Value, node.Type.Name.Value);
+        return true;
     }
 
     private void LogNameAlreadyUsedError(Token token)
