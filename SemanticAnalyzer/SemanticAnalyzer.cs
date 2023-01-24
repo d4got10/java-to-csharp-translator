@@ -13,7 +13,8 @@ public class SemanticAnalyzer
 
     private Context _context = new(new HashSet<string>
         {
-            "System.out.println"
+            "System.out.println",
+            "String"
         }, 
         new Dictionary<string, string>());
 
