@@ -14,6 +14,7 @@ public class SemanticAnalyzer
     private Context _context = new(new HashSet<string>
         {
             "System.out.println",
+            "System.out.print",
             "String",
             "int",
             "bool",
