@@ -38,10 +38,11 @@ namespace LexicalAnalysis
             int numLines = CountLines(text);
             List<Token> lexems = new List<Token>();
             bool isStringValueParseNow=false;
+            bool isCharParsedNow = false;
             for(int l = 0; l < numLines; l++)
             {
                 var currentLine = GetLine(text, l);
-                string pattern = @"([\u0022\u002F\u003D\u0025\u005B\u005D*() ,;+><!&|-}{])";
+                string pattern = @"([\u0022\u0027\u002F\u003D\u0025\u005B\u005D*() ,;+><!&|-}{])";
                 var currentLineWords = Regex.Split(currentLine, pattern);
                 string[,] words = new string[currentLineWords.Length, 3];
                 for(var i = 0 ; i<currentLineWords.Length; i++)
@@ -52,45 +53,7 @@ namespace LexicalAnalysis
                 int k=0;
                 for (var i = 0; i < words.GetLength(0); i++)
                 {
-                    if (words[i,0] == "\"" && isStringValueParseNow)
-                    {
-                        isStringValueParseNow = false;
-                        words[k,0] += words[i,0];
-                        words[i,0] = "";
-                    }
-                    if (words[i,0] == "\"" && !isStringValueParseNow)
-                    {
-                        isStringValueParseNow = true;
-                        k = i;
-                        words[i, 1] = l.ToString();
-                        words[i, 2] = offset.ToString();
-                    }
-                    if (isStringValueParseNow && words[i,0]!="\"")
-                    {
-                        words[k,0] += words[i,0];
-                        words[i,0] = "";
-                        words[i, 1] = l.ToString();
-                        words[i, 2] = offset.ToString();
-                    }
-                    
-                    if (!isStringValueParseNow && words[i,0]!="\"" && words[i,0].Length>0)
-                    {
-                        words[i, 0] = words[i,0];
-                        words[i, 1] = l.ToString();
-                        words[i, 2] = offset.ToString();
-                    }
-
-                    if (i==0 && isStringValueParseNow)
-                    {
-                        words[i, 0] = "\"" + words[k, 0];
-                    }
-                    
-                    if (isStringValueParseNow && i == words.GetLength(0) - 1)
-                    {
-                        words[k, 0] = words[k, 0]+"\"";
-                    }
-
-                    offset += words[i,0].Length;
+                    isStringValueParseNow = IsStringValueParseNow(words, i, isStringValueParseNow, l, ref k, ref offset, "\"");
                 }
 
                 for (int w = 0; w < words.GetLength(0); w++)
@@ -104,7 +67,7 @@ namespace LexicalAnalysis
 
                 SplitIdentifiersByDots(ref lexems);
                 ConcatinateMultilineStrings(ref lexems);
-
+                extractChars(ref lexems);
             }
             
             for (var i = 0; i < lexems.Count; i++)
@@ -122,7 +85,85 @@ namespace LexicalAnalysis
             return lexems;
         }
 
+        private static bool IsStringValueParseNow(string[,] words, int i, bool isStringValueParseNow, int l, ref int k,
+            ref int offset, string symbol)
+        {
+            if (words[i, 0] == symbol && isStringValueParseNow)
+            {
+                isStringValueParseNow = false;
+                words[k, 0] += words[i, 0];
+                words[i, 0] = "";
+            }
 
+            if (words[i, 0] == symbol && !isStringValueParseNow)
+            {
+                isStringValueParseNow = true;
+                k = i;
+                words[i, 1] = l.ToString();
+                words[i, 2] = offset.ToString();
+            }
+
+            if (isStringValueParseNow && words[i, 0] != symbol)
+            {
+                words[k, 0] += words[i, 0];
+                words[i, 0] = "";
+                words[i, 1] = l.ToString();
+                words[i, 2] = offset.ToString();
+            }
+
+            if (!isStringValueParseNow && words[i, 0] != symbol && words[i, 0].Length > 0)
+            {
+                words[i, 0] = words[i, 0];
+                words[i, 1] = l.ToString();
+                words[i, 2] = offset.ToString();
+            }
+
+            if (i == 0 && isStringValueParseNow)
+            {
+                words[i, 0] = symbol + words[k, 0];
+            }
+
+            if (isStringValueParseNow && i == words.GetLength(0) - 1)
+            {
+                words[k, 0] = words[k, 0] + symbol;
+            }
+
+            offset += words[i, 0].Length;
+            return isStringValueParseNow;
+        }
+
+
+        private void extractChars(ref List<Token> lexems)
+        {
+            int j = 0;
+            int k = 0;
+            while (j<lexems.Count-1)
+            {
+                if (lexems[j].Value == "\'")
+                {
+                    k = j;
+                    var column = lexems[j].ColumnNumber;
+                    var line = lexems[j].LineNumber;
+                    String value = lexems[j].Value;
+                    lexems[j].Value = "";
+                    j++;
+                    while (lexems[j].Value != "\'" && j<lexems.Count-2)
+                    {
+                        value += lexems[j].Value;
+                        lexems[j].Value = "";
+                        j++;
+                    }
+                    value += lexems[j].Value;
+                    lexems[j].Value = "";
+                    lexems[k] = new Token(TokenType.Value, value, column, line);
+                }
+                else
+                {
+                    j++;
+                }
+            }
+        }
+        
         private void ConcatinateMultilineStrings(ref List<Token> lexems)
         {
             int j = 0;
@@ -168,7 +209,7 @@ namespace LexicalAnalysis
                 }
             }
         }
-        
+
         private bool IsTwoSymbolOperator(string a, string b)
         {
             foreach (var op in TokenTypeHashSets.Operators)
